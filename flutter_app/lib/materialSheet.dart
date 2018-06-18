@@ -5,13 +5,13 @@ import 'package:scoped_model/scoped_model.dart';
 //-------------------------Scoped Model-------------------------
 
 class SheetState extends Model {
-  bool _isOpen;
-  bool get isOpen => _isOpen;
-  set isOpen(bool newIsOpen){
-    _isOpen = newIsOpen;
+  double _openPercent;
+  double get openPercent => _openPercent;
+  set openPercent(double newPercentOpen){
+    _openPercent = newPercentOpen.clamp(0.0, 1.0);
     notifyListeners();
   }
-  SheetState(this._isOpen);
+  SheetState(this._openPercent);
 }
 
 //-------------------------Enumerations-------------------------
@@ -104,11 +104,11 @@ class MaterialSheet extends StatelessWidget {
 
   //-------------------------Helper Functions
 
-  openSheet() => (_currSheetState.isOpen == false) ? _currSheetState.isOpen = true : print("sheet already open");
-  closeSheet() => (_currSheetState.isOpen == true) ? _currSheetState.isOpen = false : print("sheet already closed");
+  openSheet() => _currSheetState.openPercent = 1.0;
+  closeSheet() => _currSheetState.openPercent = 0.0;
 
-  bool isSheetOpen(){
-    return _currSheetState.isOpen;
+  double sheetOpenPercent(){
+    return _currSheetState.openPercent;
   }
 
   //-------------------------Build Method
@@ -117,24 +117,23 @@ class MaterialSheet extends StatelessWidget {
   Widget build(BuildContext context) {
 
     if(_currSheetState == null)
-      _currSheetState = new SheetState(startOpen);
+      _currSheetState = new SheetState((startOpen) ? 1.0 : 0.0);
 
     return new ScopedModel<SheetState>(
       model: _currSheetState,
       child: new MediaQuery(
-        data: new MediaQueryData(),
+        data: MediaQueryData(),
         child: new Directionality(
           textDirection: TextDirection.ltr,
           child: new Stack(
             children: <Widget>[
               app,
-              //-----Sheet Start
               new ScopedModelDescendant<SheetState>(
                 builder: (context, child, model) => new SheetWidget(
                   sheet: sheet,
                   attachment: attachment,
 
-                  isSheetOpenFunc: isSheetOpen,
+                  sheetOpenPercent: sheetOpenPercent,
                   position: position,
                   type: type,
                   placement: placement,
@@ -146,9 +145,21 @@ class MaterialSheet extends StatelessWidget {
                   sheetMin: sheetMin,
                   sheetMax: sheetMax,
                 ),
-              )
-              //-----Sheet End
-              ,
+              ),
+              new Scaffold(
+                backgroundColor: Colors.transparent,
+                body: new Container(
+                  alignment: Alignment.topCenter,
+                  child: new Slider(
+                    value: _currSheetState.openPercent,
+                    min: 0.0,
+                    max: 1.0,
+                    onChanged: (value) {
+                      _currSheetState.openPercent = value;
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -169,7 +180,7 @@ class SheetWidget extends StatefulWidget {
     @required this.sheet,
     @required this.attachment,
 
-    @required this.isSheetOpenFunc,
+    @required this.sheetOpenPercent,
     @required this.position,
     @required this.type,
     @required this.placement,
@@ -185,7 +196,7 @@ class SheetWidget extends StatefulWidget {
   final Widget sheet;
   final Widget attachment;
 
-  final Function isSheetOpenFunc;
+  final Function sheetOpenPercent;
   final sheetPosition position;
   final sheetType type;
   final attachmentPlacement placement;
@@ -210,7 +221,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   static Widget sheet;
   static Widget attachment;
 
-  static Function isSheetOpen;
+  static Function sheetOpenPercent;
   static sheetPosition position;
   static sheetType type;
   static attachmentPlacement placement;
@@ -227,7 +238,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     sheet = widget.sheet;
     attachment = widget.attachment;
 
-    isSheetOpen = widget.isSheetOpenFunc;
+    sheetOpenPercent = widget.sheetOpenPercent;
     position = widget.position;
     type = widget.type;
     placement = widget.placement;
@@ -249,9 +260,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   rebuildAsync() async{
     await Future.delayed(Duration.zero);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   //-------------------------Required For WidgetsBindingObserver
@@ -273,7 +282,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   @override
   didPopRoute(){
-    bool override = backBtnClosesSheet && isSheetOpen();
+    bool override = backBtnClosesSheet && (sheetOpenPercent() !=  0.0);
     if(override)
       closeSheetFunc();
     return new Future<bool>.value(override);
@@ -282,6 +291,10 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   //-------------------------Helper Functions
 
   Matrix4 _calcSheetClosedTransform(bool isWidthMax, double width, double height){
+
+    width = width ?? 0.0;
+    height = height ?? 0.0;
+
     if(isWidthMax){ //mess with y
       if(position == sheetPosition.top) return Matrix4.translationValues(0.0, -height, 0.0);
       else return Matrix4.translationValues(0.0, height, 0.0);
@@ -344,19 +357,18 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   }
 
   Matrix4 _calcTransform(bool isWidthMax, double width, double height){
-    if(isSheetOpen())
-      return Matrix4.translationValues(0.0,0.0,0.0);
-    else
-      return _calcSheetClosedTransform(isWidthMax, width, height);
+    Matrix4 beginMatrix = Matrix4.translationValues(0.0,0.0,0.0);
+    Matrix4 endMatrix = _calcSheetClosedTransform(isWidthMax, width, height);
+    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(sheetOpenPercent());
   }
 
   //-------------------------Helper Widget Extracts
 
   Widget scrimWidget(){
     if(type == sheetType.modal){
-      if(isSheetOpen()){
+      if(sheetOpenPercent() != 0.0){
         return new Container(
-          color: Color.fromRGBO(0,0,0,.5),
+          color: Colors.black.withOpacity(0.0 * (1.0 - sheetOpenPercent()) + .5 * sheetOpenPercent()),
           child: new GestureDetector(
             onTap: closeSheetFunc,
           ),
@@ -378,7 +390,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   {
     Transform mainWidget = new Transform(
       transform: _calcTransform(isWidthMax, sheetWidth, sheetHeight),
-      child: new Flex(
+      child:
+      new Flex(
         direction: (isWidthMax)
             ? Axis.vertical
             : Axis.horizontal,
@@ -424,8 +437,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
           ),
         ],
       ),
-    );
 
+    );
 
     if(placement == attachmentPlacement.inside){
       return mainWidget;
@@ -470,12 +483,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     double sheetWidth = sheetKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
     double sheetHeight = sheetKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
 
-    if(sheetWidth != null)
-      print("width $sheetWidth height $sheetHeight");
-
     //---Required to read in sheetWidth and sheetHeight
     timesBuilt++;
-    print("build #" + timesBuilt.toString());
     if(timesBuilt < requiredBuildsPerChange)
       rebuildAsync();
     else

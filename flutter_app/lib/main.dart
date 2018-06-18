@@ -83,6 +83,7 @@ class MaterialSheetApp extends StatelessWidget {
       ),
       //-----Other Vars
       startOpen: true,
+      position: sheetPosition.bottom,
       placement: attachmentPlacement.outside,
       type: sheetType.modal,
       sheetMin: 150.0,
