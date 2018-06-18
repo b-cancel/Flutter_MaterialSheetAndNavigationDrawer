@@ -78,13 +78,13 @@ class MaterialSheetApp extends StatelessWidget {
         ),
       ),
       attachment: new Icon(
-        Icons.print,
+        Icons.attachment,
         color: Colors.white,
       ),
       //-----Other Vars
       startOpen: true,
-      position: sheetPosition.bottom,
-      placement: attachmentPlacement.outside,
+      position: sheetPosition.right,
+      placement: attachmentPlacement.inside,
       type: sheetType.modal,
       sheetMin: 150.0,
     );
@@ -92,4 +92,3 @@ class MaterialSheetApp extends StatelessWidget {
     return matSheet;
   }
 }
-

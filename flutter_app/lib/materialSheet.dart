@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:scoped_model/scoped_model.dart';
@@ -107,8 +109,12 @@ class MaterialSheet extends StatelessWidget {
   openSheet() => _currSheetState.openPercent = 1.0;
   closeSheet() => _currSheetState.openPercent = 0.0;
 
-  double sheetOpenPercent(){
+  double getOpenPercent(){
     return _currSheetState.openPercent;
+  }
+
+  void setOpenPercent(double newOpenPercent){
+    _currSheetState.openPercent = newOpenPercent;
   }
 
   //-------------------------Build Method
@@ -133,7 +139,9 @@ class MaterialSheet extends StatelessWidget {
                   sheet: sheet,
                   attachment: attachment,
 
-                  sheetOpenPercent: sheetOpenPercent,
+                  getOpenPercent: getOpenPercent,
+                  setOpenPercent: setOpenPercent,
+
                   position: position,
                   type: type,
                   placement: placement,
@@ -144,20 +152,6 @@ class MaterialSheet extends StatelessWidget {
                   //TODO... in progress
                   sheetMin: sheetMin,
                   sheetMax: sheetMax,
-                ),
-              ),
-              new Scaffold(
-                backgroundColor: Colors.transparent,
-                body: new Container(
-                  alignment: Alignment.topCenter,
-                  child: new Slider(
-                    value: _currSheetState.openPercent,
-                    min: 0.0,
-                    max: 1.0,
-                    onChanged: (value) {
-                      _currSheetState.openPercent = value;
-                    },
-                  ),
                 ),
               ),
             ],
@@ -180,7 +174,8 @@ class SheetWidget extends StatefulWidget {
     @required this.sheet,
     @required this.attachment,
 
-    @required this.sheetOpenPercent,
+    @required this.getOpenPercent,
+    @required this.setOpenPercent,
     @required this.position,
     @required this.type,
     @required this.placement,
@@ -196,7 +191,8 @@ class SheetWidget extends StatefulWidget {
   final Widget sheet;
   final Widget attachment;
 
-  final Function sheetOpenPercent;
+  final Function getOpenPercent;
+  final Function setOpenPercent;
   final sheetPosition position;
   final sheetType type;
   final attachmentPlacement placement;
@@ -221,7 +217,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   static Widget sheet;
   static Widget attachment;
 
-  static Function sheetOpenPercent;
+  static Function getOpenPercent;
+  static Function setOpenPercent;
   static sheetPosition position;
   static sheetType type;
   static attachmentPlacement placement;
@@ -238,7 +235,9 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     sheet = widget.sheet;
     attachment = widget.attachment;
 
-    sheetOpenPercent = widget.sheetOpenPercent;
+    getOpenPercent = widget.getOpenPercent;
+    setOpenPercent = widget.setOpenPercent;
+
     position = widget.position;
     type = widget.type;
     placement = widget.placement;
@@ -253,6 +252,11 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Local Variables
 
+
+  //for gestures and animations
+  StreamController<double> slideUpdateStream;
+
+  //for back button override functionality
   int requiredBuildsPerChange = 2;
   int timesBuilt = 0;
 
@@ -261,6 +265,16 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   rebuildAsync() async{
     await Future.delayed(Duration.zero);
     setState(() {});
+  }
+
+  //-------------------------Required For Gestures and Animations
+
+  _SheetWidgetState() {
+    slideUpdateStream = new StreamController<double>();
+
+    slideUpdateStream.stream.listen((double newPercent){
+      setOpenPercent(newPercent);
+    });
   }
 
   //-------------------------Required For WidgetsBindingObserver
@@ -282,7 +296,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   @override
   didPopRoute(){
-    bool override = backBtnClosesSheet && (sheetOpenPercent() !=  0.0);
+    bool override = backBtnClosesSheet && (getOpenPercent() !=  0.0);
     if(override)
       closeSheetFunc();
     return new Future<bool>.value(override);
@@ -359,16 +373,16 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   Matrix4 _calcTransform(bool isWidthMax, double width, double height){
     Matrix4 beginMatrix = Matrix4.translationValues(0.0,0.0,0.0);
     Matrix4 endMatrix = _calcSheetClosedTransform(isWidthMax, width, height);
-    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(sheetOpenPercent());
+    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(getOpenPercent());
   }
 
   //-------------------------Helper Widget Extracts
 
   Widget scrimWidget(){
     if(type == sheetType.modal){
-      if(sheetOpenPercent() != 0.0){
+      if(getOpenPercent() != 0.0){
         return new Container(
-          color: Colors.black.withOpacity(0.0 * (1.0 - sheetOpenPercent()) + .5 * sheetOpenPercent()),
+          color: Colors.black.withOpacity(0.0 * (1.0 - getOpenPercent()) + .5 * getOpenPercent()),
           child: new GestureDetector(
             onTap: closeSheetFunc,
           ),
@@ -509,8 +523,146 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
       children: <Widget>[
         scrimWidget(),
         sheetAndAttachmentWidget(isWidthMax, sheetWidth, sheetHeight, thisSheetWidget, thisAttachmentWidget),
-        //TODO... add gesture detector (for opening and closing by following finger)
+        new SwipeToOpenClose(
+          isWidthMax: isWidthMax,
+          position: position,
+          sheetWidth: sheetWidth,
+          sheetHeight: sheetHeight,
+
+          getOpenPercent: getOpenPercent,
+
+          slideUpdateStream: slideUpdateStream,
+        ),
       ],
     );
+  }
+}
+
+//-------------------------GestureDetector Code-------------------------
+
+class SwipeToOpenClose extends StatefulWidget {
+
+  SwipeToOpenClose({
+    @required this.isWidthMax,
+    @required this.position,
+    @required this.sheetWidth,
+    @required this.sheetHeight,
+
+    @required this.getOpenPercent,
+
+    @required this.slideUpdateStream,
+  });
+
+  final bool isWidthMax;
+  final sheetPosition position;
+  final double sheetWidth;
+  final double sheetHeight;
+
+  final Function getOpenPercent;
+
+  final StreamController<double> slideUpdateStream;
+
+  @override
+  _SwipeToOpenCloseState createState() => _SwipeToOpenCloseState();
+}
+
+class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with TickerProviderStateMixin{
+
+  Offset dragStart;
+  double slideStart;
+
+  AnimatedOpenOrClose animatedOpenOrClose;
+
+  onDragStart(DragStartDetails details){
+    dragStart = details.globalPosition;
+    slideStart = widget.getOpenPercent();
+  }
+
+  onDragUpdate(DragUpdateDetails details){
+    if(dragStart != null){
+      final dragCurrent = details.globalPosition;
+      final dragChange = dragStart - dragCurrent;
+
+      double slideAdded;
+
+      if(widget.isWidthMax)
+        slideAdded = (dragChange.dy / widget.sheetHeight);
+      else
+        slideAdded = (dragChange.dx / widget.sheetWidth);
+
+      widget.slideUpdateStream.add((slideStart + slideAdded).clamp(0.0, 1.0));
+    }
+  }
+
+  onDragEnd(DragEndDetails details){
+    dragStart = null;
+
+    animatedOpenOrClose = new AnimatedOpenOrClose(
+      startOpenPercent: widget.getOpenPercent(),
+      goalOpenPercent: (widget.getOpenPercent() > 0.5) ? 1.0 : 0.0,
+      slideUpdateStream: widget.slideUpdateStream,
+      vsync: this,
+    );
+
+    animatedOpenOrClose.run();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      //---for bottom and top sheets
+      onVerticalDragStart: (widget.isWidthMax) ? onDragStart : null,
+      onVerticalDragUpdate: (widget.isWidthMax) ? onDragUpdate : null,
+      onVerticalDragEnd: (widget.isWidthMax) ? onDragEnd : null,
+      //---for left and right sheets
+      onHorizontalDragStart: (widget.isWidthMax) ? null : onDragStart,
+      onHorizontalDragUpdate: (widget.isWidthMax) ? null : onDragUpdate,
+      onHorizontalDragEnd: (widget.isWidthMax) ? null : onDragEnd,
+    );
+  }
+}
+
+//-------------------------Animation Code-------------------------
+
+class AnimatedOpenOrClose{
+
+  AnimationController completionAnimationController;
+
+  final startOpenPercent;
+  final goalOpenPercent;
+
+  AnimatedOpenOrClose({
+    this.startOpenPercent,
+    this.goalOpenPercent,
+    StreamController<double> slideUpdateStream,
+    TickerProvider vsync,
+  }){
+    //100 milliseconds is instant, 200 milliseconds is instant with an animation
+    const millisecondsToComplete = 100;
+
+    completionAnimationController = new AnimationController(
+        duration: Duration(milliseconds: millisecondsToComplete),
+        vsync: vsync,
+    )
+    ..addListener((){
+      final slidePercent = lerpDouble(
+        startOpenPercent,
+        goalOpenPercent,
+        completionAnimationController.value,
+      );
+
+      slideUpdateStream.add(slidePercent);
+    });
+  }
+
+  run() async{
+    await completionAnimationController.forward(from: 0.0);
+    dispose();
+  }
+
+  dispose(){
+    completionAnimationController.dispose();
+    this.dispose();
   }
 }
