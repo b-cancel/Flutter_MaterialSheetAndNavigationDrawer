@@ -2,26 +2,19 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:scoped_model/scoped_model.dart';
 
-//TODO... create animated open and close an
-//TODO... rename current versions as immediate open and close
-//TODO... gesture detector of modal (full screen) gesture detector of persistent (only sheet)
+//TODO... test that the sheet expands depending on the context inside of it
 //TODO... refactor like crazy
 //TODO... added need options as consequence of sheetMin and sheetMax
-//TODO... add vertical and horionztal scrolling
+//TODO... add vertical and horizontal scrolling
 
-//-------------------------Scoped Model-------------------------
+//-------------------------Global Variables-------------------------
 
-class SheetState extends Model {
-  double _openPercent;
-  double get openPercent => _openPercent;
-  set openPercent(double newPercentOpen){
-    _openPercent = newPercentOpen.clamp(0.0, 1.0);
-    notifyListeners();
-  }
-  SheetState(this._openPercent);
-}
+double openPercent; //DO NOT SET THIS VARIABLE MANUALLY
+OpenOrCloseAnimation _animatedOpenOrClose;
+int _millisecondsPerAnimation = 100;
+TickerProvider _animationTicker;
+StreamController<double> _slideUpdateStream;
 
 //-------------------------Enumerations-------------------------
 
@@ -32,7 +25,7 @@ enum attachmentPlacement { inside, outside }
 //-------------------------Material Sheet-------------------------
 
 //NOTE: this has to be stateless so that I can address the sheetOpen and sheetClose Functions
-class MaterialSheet extends StatelessWidget {
+class MaterialSheet extends StatelessWidget{
 
   //-------------------------Parameters
 
@@ -89,66 +82,51 @@ class MaterialSheet extends StatelessWidget {
   //if you dont want your sheet to be larger than a certain size
   final double sheetMax; //TODO... set inherent limit (max size).... allow overflow to just be scrolled
 
-  //-------------------------Local Variables
-
-  SheetState _currSheetState;
-
   //-------------------------Helper Functions
 
-  openSheet() => _currSheetState.openPercent = 1.0;
-  closeSheet() => _currSheetState.openPercent = 0.0;
+  //-----Instantaneous
+  openInstantaneous() => completeOpenOrClose(1.0, 0, _slideUpdateStream, _animationTicker);
+  closeInstantaneous() => completeOpenOrClose(0.0, 0, _slideUpdateStream, _animationTicker);
 
-  double getOpenPercent(){
-    return _currSheetState.openPercent;
-  }
-
-  void setOpenPercent(double newOpenPercent){
-    _currSheetState.openPercent = newOpenPercent;
-  }
+  //-----Animated
+  openAnimated() => completeOpenOrClose(1.0, _millisecondsPerAnimation, _slideUpdateStream, _animationTicker);
+  closeAnimated() => completeOpenOrClose(0.0, _millisecondsPerAnimation, _slideUpdateStream, _animationTicker);
 
   //-------------------------Build Method
 
   @override
   Widget build(BuildContext context) {
 
-    if(_currSheetState == null)
-      _currSheetState = new SheetState((startOpen) ? 1.0 : 0.0);
+    if(openPercent == null)
+      openPercent = (startOpen) ? 1.0 : 0.0;
 
-    return new ScopedModel<SheetState>(
-      model: _currSheetState,
-      child: new MediaQuery(
-        data: MediaQueryData(),
-        child: new Directionality(
-          textDirection: TextDirection.ltr,
-          child: new Stack(
-            children: <Widget>[
-              app,
-              new ScopedModelDescendant<SheetState>(
-                builder: (context, child, model) => new SheetWidget(
-                  closeSheetFunc: closeSheet,
+    return new MediaQuery(
+      data: MediaQueryData(),
+      child: new Directionality(
+        textDirection: TextDirection.ltr,
+        child: new Stack(
+          children: <Widget>[
+            app,
+            new SheetWidget(
+              closeSheetFunc: closeAnimated,
 
-                  getOpenPercent: getOpenPercent,
-                  setOpenPercent: setOpenPercent,
+              sheet: sheet,
+              attachment: attachment,
 
-                  sheet: sheet,
-                  attachment: attachment,
+              position: position,
+              type: type,
+              placement: placement,
+              backBtnClosesSheet: backBtnClosesSheet,
+              autoOpenOrCloseIndicator: autoOpenOrCloseIndicator,
 
-                  position: position,
-                  type: type,
-                  placement: placement,
-                  backBtnClosesSheet: backBtnClosesSheet,
-                  autoOpenOrCloseIndicator: autoOpenOrCloseIndicator,
+              swipeToOpen: swipeToOpen,
+              swipeToClose: swipeToClose,
 
-                  swipeToOpen: swipeToOpen,
-                  swipeToClose: swipeToClose,
-
-                  //TODO... in progress
-                  sheetMin: sheetMin,
-                  sheetMax: sheetMax,
-                ),
-              ),
-            ],
-          ),
+              //TODO... in progress
+              sheetMin: sheetMin,
+              sheetMax: sheetMax,
+            ),
+          ],
         ),
       ),
     );
@@ -157,7 +135,7 @@ class MaterialSheet extends StatelessWidget {
 
 //-------------------------The Actual Sheet-------------------------
 
-//NOTE: this has to be stateful because with WidgetsBindingObserver requires it
+//NOTE: this has to be stateful because with WidgetsBindingObserver requires it and setState might be called
 class SheetWidget extends StatefulWidget {
 
   //-------------------------Parameters
@@ -166,9 +144,6 @@ class SheetWidget extends StatefulWidget {
     Key key,
 
     @required this.closeSheetFunc,
-
-    @required this.getOpenPercent,
-    @required this.setOpenPercent,
 
     @required this.sheet,
     @required this.attachment,
@@ -188,9 +163,6 @@ class SheetWidget extends StatefulWidget {
   }) : super(key: key);
 
   final Function closeSheetFunc;
-
-  final Function getOpenPercent;
-  final Function setOpenPercent;
 
   final Widget sheet;
   final Widget attachment;
@@ -220,9 +192,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   static Function closeSheetFunc;
 
-  static Function getOpenPercent;
-  static Function setOpenPercent;
-
   static Widget sheet;
   static Widget attachment;
 
@@ -242,9 +211,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   void _tieVarsOnInit() {
     closeSheetFunc = widget.closeSheetFunc;
 
-    getOpenPercent = widget.getOpenPercent;
-    setOpenPercent = widget.setOpenPercent;
-
     sheet = widget.sheet;
     attachment = widget.attachment;
     position = widget.position;
@@ -263,10 +229,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Local Variables
 
-
-  //for gestures and animations
-  StreamController<double> slideUpdateStream;
-
   //for back button override functionality
   int requiredBuildsPerChange = 2;
   int timesBuilt = 0;
@@ -281,10 +243,12 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   //-------------------------Required For Gestures and Animations
 
   _SheetWidgetState() {
-    slideUpdateStream = new StreamController<double>();
+    _slideUpdateStream = new StreamController<double>();
 
-    slideUpdateStream.stream.listen((double newPercent){
-      setOpenPercent(newPercent);
+    _slideUpdateStream.stream.listen((double newPercent){
+      setState(() {
+        openPercent = newPercent;
+      });
     });
   }
 
@@ -307,7 +271,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   @override
   didPopRoute(){
-    bool override = backBtnClosesSheet && (getOpenPercent() !=  0.0);
+    bool override = backBtnClosesSheet && (openPercent ==  1.0);
     if(override)
       closeSheetFunc();
     return new Future<bool>.value(override);
@@ -384,12 +348,12 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   Matrix4 _calcTransform(bool isWidthMax, double width, double height){
     Matrix4 beginMatrix = Matrix4.translationValues(0.0,0.0,0.0);
     Matrix4 endMatrix = _calcSheetClosedTransform(isWidthMax, width, height);
-    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(getOpenPercent());
+    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(openPercent);
   }
 
   Color _calcIndicatorColor(){
     if(autoOpenOrCloseIndicator){
-      if(getOpenPercent() > .5) return Colors.black.withOpacity(0.0);
+      if(openPercent > .5) return Colors.black.withOpacity(0.0);
       else return Colors.black.withOpacity(.5);
     }
     else return Colors.transparent;
@@ -399,9 +363,9 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   Widget scrimWidget(){
     if(type == sheetType.modal){
-      if(getOpenPercent() != 0.0){
+      if(openPercent != 0.0){
         return new Container(
-          color: Colors.black.withOpacity(0.0 * (1.0 - getOpenPercent()) + .5 * getOpenPercent()),
+          color: Colors.black.withOpacity(0.0 * (1.0 - openPercent) + .5 * openPercent),
           child: new GestureDetector(
             onTap: closeSheetFunc,
           ),
@@ -452,8 +416,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
                     position: position,
                     sheetWidth: sheetWidth,
                     sheetHeight: sheetHeight,
-                    getOpenPercent: getOpenPercent,
-                    slideUpdateStream: slideUpdateStream,
                     swipeToOpen: swipeToOpen,
                     swipeToClose: swipeToClose,
                     child: new Flex(
@@ -587,6 +549,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
 //-------------------------GestureDetector Code-------------------------
 
+//NOTE: this has to be stateful because the SingleTickerProviderStateMixin requires it
 class SwipeToOpenClose extends StatefulWidget {
 
   SwipeToOpenClose({
@@ -597,10 +560,6 @@ class SwipeToOpenClose extends StatefulWidget {
 
     @required this.swipeToOpen,
     @required this.swipeToClose,
-
-    @required this.getOpenPercent,
-
-    @required this.slideUpdateStream,
 
     @required this.child,
   });
@@ -613,10 +572,6 @@ class SwipeToOpenClose extends StatefulWidget {
   final bool swipeToOpen;
   final bool swipeToClose;
 
-  final Function getOpenPercent;
-
-  final StreamController<double> slideUpdateStream;
-
   final Widget child;
 
   @override
@@ -628,10 +583,8 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
   Offset dragStart;
   double slideStart;
 
-  AnimatedOpenOrClose animatedOpenOrClose;
-
   onDragStart(DragStartDetails details){
-    slideStart = widget.getOpenPercent();
+    slideStart = openPercent;
     dragStart = details.globalPosition;
 
     //NOTE: because our animation will complete any drag...
@@ -658,34 +611,21 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
       else
         slideAdded = (dragChange.dx / widget.sheetWidth);
 
-      widget.slideUpdateStream.add((slideStart + slideAdded).clamp(0.0, 1.0));
+      _slideUpdateStream.add((slideStart + slideAdded).clamp(0.0, 1.0));
     }
   }
 
   onDragEnd(DragEndDetails details){
     dragStart = null;
-    animateOpenClose((widget.getOpenPercent() > 0.5) ? 1.0 : 0.0);
-  }
 
-  animateOpenClose(double goalOpenPercent){
-    if(animatedOpenOrClose == null){
-      animatedOpenOrClose = new AnimatedOpenOrClose(
-        startOpenPercent: widget.getOpenPercent(),
-        goalOpenPercent: goalOpenPercent,
-        slideUpdateStream: widget.slideUpdateStream,
-        vsync: this,
-      );
-    }
-    else{
-      animatedOpenOrClose.startOpenPercent = widget.getOpenPercent();
-      animatedOpenOrClose.goalOpenPercent = goalOpenPercent;
-    }
-
-    animatedOpenOrClose.run();
+    completeOpenOrClose((openPercent > 0.5) ? 1.0 : 0.0, _millisecondsPerAnimation, _slideUpdateStream, _animationTicker);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    _animationTicker = this;
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       //---for bottom and top sheets
@@ -703,22 +643,50 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
 
 //-------------------------Animation Code-------------------------
 
-class AnimatedOpenOrClose{
+completeOpenOrClose(double goalOpenPercent, int millisecondsToComplete, StreamController<double> slideUpdateStream, TickerProvider ticker){
+  if(_animatedOpenOrClose == null){
+    _animatedOpenOrClose = new OpenOrCloseAnimation(
+      startOpenPercent: openPercent,
+      goalOpenPercent: goalOpenPercent,
+      millisecondsToComplete: millisecondsToComplete,
+
+      slideUpdateStream: slideUpdateStream,
+      vsync: ticker,
+    );
+
+    print(ticker.toString());
+  }
+  else{
+    _animatedOpenOrClose.startOpenPercent = openPercent;
+    _animatedOpenOrClose.goalOpenPercent = goalOpenPercent;
+    _animatedOpenOrClose.millisecondsToComplete = millisecondsToComplete;
+    _animatedOpenOrClose.completionAnimationController.duration = new Duration(milliseconds: millisecondsToComplete);
+  }
+
+  _animatedOpenOrClose.run();
+}
+
+//-------------------------Animation Class-------------------------
+
+class OpenOrCloseAnimation{
 
   AnimationController completionAnimationController;
 
   double startOpenPercent;
   double goalOpenPercent;
+  int millisecondsToComplete;
+  StreamController<double> slideUpdateStream;
+  TickerProvider vsync;
 
-  AnimatedOpenOrClose({
-    this.startOpenPercent,
-    this.goalOpenPercent,
-    StreamController<double> slideUpdateStream,
-    TickerProvider vsync,
+  OpenOrCloseAnimation({
+    @required this.startOpenPercent,
+    @required this.goalOpenPercent,
+    @required this.millisecondsToComplete,
+
+    //NOTE: these variables are initially passed by the only stateful widget that has a Ticker
+    @required this.slideUpdateStream,
+    @required this.vsync,
   }){
-    //100 milliseconds is instant, 200 milliseconds is instant with an animation
-    const millisecondsToComplete = 100;
-
     completionAnimationController = new AnimationController(
         duration: Duration(milliseconds: millisecondsToComplete),
         vsync: vsync,
@@ -736,10 +704,5 @@ class AnimatedOpenOrClose{
 
   run() async{
     completionAnimationController.forward(from: 0.0);
-  }
-
-  dispose(){
-    completionAnimationController.dispose();
-    this.dispose();
   }
 }

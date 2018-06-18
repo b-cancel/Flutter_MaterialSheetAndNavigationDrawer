@@ -9,8 +9,10 @@ class MaterialSheetApp extends StatelessWidget {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   MaterialSheet matSheet;
-  openSheet() => matSheet.openSheet();
-  closeSheet() => matSheet.closeSheet();
+  openInstant() => matSheet.openInstantaneous();
+  closeInstant() => matSheet.closeInstantaneous();
+  openAnim() => matSheet.openAnimated();
+  closeAnim() => matSheet.closeAnimated();
 
   //-------------------------Build Function
 
@@ -29,7 +31,7 @@ class MaterialSheetApp extends StatelessWidget {
                   new Container(
                     color: Colors.red,
                     child: new FlatButton(
-                      onPressed: () => closeSheet(),
+                      onPressed: () => closeAnim(),
                       child: new Icon(
                         Icons.close,
                         color: Colors.white,
@@ -39,7 +41,7 @@ class MaterialSheetApp extends StatelessWidget {
                   new Container(
                     color: Colors.blue,
                     child: new FlatButton(
-                      onPressed: () => openSheet(),
+                      onPressed: () => openInstant(),
                       child: new Icon(
                         Icons.open_in_browser,
                         color: Colors.white,
@@ -57,7 +59,7 @@ class MaterialSheetApp extends StatelessWidget {
             new Container(
               color: Colors.red,
               child: new FlatButton(
-                onPressed: () => closeSheet(),
+                onPressed: () => closeAnim(),
                 child: new Icon(
                   Icons.close,
                   color: Colors.white,
@@ -67,7 +69,7 @@ class MaterialSheetApp extends StatelessWidget {
             new Container(
               color: Colors.blue,
               child: new FlatButton(
-                onPressed: () => openSheet(),
+                onPressed: () => openInstant(),
                 child: new Icon(
                   Icons.open_in_browser,
                   color: Colors.white,
@@ -86,7 +88,6 @@ class MaterialSheetApp extends StatelessWidget {
       //-----Other Vars
       startOpen: true,
       position: sheetPosition.left,
-      type: sheetType.persistent,
       sheetMin: 150.0,
     );
 

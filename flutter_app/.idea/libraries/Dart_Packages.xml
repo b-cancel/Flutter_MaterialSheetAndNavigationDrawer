@@ -30,6 +30,13 @@
             </list>
           </value>
         </entry>
+        <entry key="browser">
+          <value>
+            <list>
+              <option value="C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/browser-0.10.0+3/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="charcode">
           <value>
             <list>
@@ -128,6 +135,13 @@
             </list>
           </value>
         </entry>
+        <entry key="intl">
+          <value>
+            <list>
+              <option value="C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.15.6/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="io">
           <value>
             <list>
@@ -153,6 +167,13 @@
           <value>
             <list>
               <option value="C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/logging-0.11.3+1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="logging_handlers">
+          <value>
+            <list>
+              <option value="C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/logging_handlers-0.8.0/lib" />
             </list>
           </value>
         </entry>
@@ -352,6 +373,13 @@
             </list>
           </value>
         </entry>
+        <entry key="validate">
+          <value>
+            <list>
+              <option value="C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/validate-1.6.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="vector_math">
           <value>
             <list>
@@ -387,6 +415,7 @@
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/args-1.4.3/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.0.7/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/boolean_selector-1.0.3/lib" />
+      <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/browser-0.10.0+3/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/charcode-1.1.1/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/collection-1.14.6/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/convert-2.0.1/lib" />
@@ -399,10 +428,12 @@
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.11.3+16/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/http_multi_server-2.0.4/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-3.1.2/lib" />
+      <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.15.6/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/io-0.3.2+1/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.1/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/kernel-0.3.0-alpha.12/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/logging-0.11.3+1/lib" />
+      <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/logging_handlers-0.8.0/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.2+1/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/meta-1.1.5/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/mime-0.9.6/lib" />
@@ -430,6 +461,7 @@
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/test-0.12.37/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/typed_data-1.1.5/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/utf-0.9.0+4/lib" />
+      <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/validate-1.6.0/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/vector_math-2.0.6/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/watcher-0.9.7+7/lib" />
       <root url="file://C:/Program Files/flutter/.pub-cache/hosted/pub.dartlang.org/web_socket_channel-1.0.7/lib" />
