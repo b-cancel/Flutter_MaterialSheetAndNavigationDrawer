@@ -4,6 +4,13 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:scoped_model/scoped_model.dart';
 
+//TODO... create animated open and close an
+//TODO... rename current versions as immediate open and close
+//TODO... gesture detector of modal (full screen) gesture detector of persistent (only sheet)
+//TODO... refactor like crazy
+//TODO... added need options as consequence of sheetMin and sheetMax
+//TODO... add vertical and horionztal scrolling
+
 //-------------------------Scoped Model-------------------------
 
 class SheetState extends Model {
@@ -40,16 +47,14 @@ class MaterialSheet extends StatelessWidget {
       this.type: sheetType.modal,
       this.placement: attachmentPlacement.inside,
       this.backBtnClosesSheet: true,
+      this.autoOpenOrCloseIndicator: false,
+
+      this.swipeToOpen: true,
+      this.swipeToClose: true,
 
       //TODO... In Progress
       this.sheetMin,
       this.sheetMax,
-      this.verticalScrollOnOverflow: false,
-      this.horizontalScrollOnOverflow: false,
-      this.swipeToOpen: true,
-      this.swipeToClose: true,
-      this.closeBarAutoAppear: false,
-      this.willAutoOpenOrAutoCloseIndicator: true,
       })
       : super(key: key);
 
@@ -70,35 +75,19 @@ class MaterialSheet extends StatelessWidget {
   final attachmentPlacement placement;
   //whether or not the backButton closes the Sheet (ONLY android)
   final bool backBtnClosesSheet;
+  //if you drag the sheet but not all the way after 50% on either side it will open or close automatically
+  //this will show an indicator when the action that will be taken is obvious
+  //darker overlay means it will close, no overlay means it will open
+  final bool autoOpenOrCloseIndicator;
+
+  final bool swipeToOpen;
+  final bool swipeToClose;
 
   //---------TODO... In Progress
   //if you have too little content you still want your sheet to be a particular size (might have to align)
   final double sheetMin; //TODO... check if I need alignment var addition
   //if you dont want your sheet to be larger than a certain size
   final double sheetMax; //TODO... set inherent limit (max size).... allow overflow to just be scrolled
-  //if you drag the sheet but not all the way after 50% on either side it will open or close automatically
-  //this will show an indicator when the action that will be taken is obvious
-  //darker overlay means it will close, no overlay means it will open
-  final bool willAutoOpenOrAutoCloseIndicator; //TODO...
-
-  //TODO... DECIDE (all transparent gesture detectors)
-  //swipe anywhere on screen?!
-  //swipe only from dragging invisible edge?!
-  //swipe only from dragging attachment container?! (if exists)
-  final bool swipeToOpen; //TODO
-  //TODO... DECIDE (2 gesture detectors, modal sheet area can have transparent, sheet and attachment area MUST have opaque)
-  //swipe anywhere on screen?!
-  //swipe only the sheet itself?!
-  //swipe only on the attachment?!
-  //swipe only on the modal sheet?! (if exists)
-  final bool swipeToClose; //TODO
-
-  final bool verticalScrollOnOverflow; //TODO
-  final bool horizontalScrollOnOverflow; //TODO
-
-  //EX: if you sheet is a bottom sheet and your content fills the screen vertically,
-  //  you have a bar to close the entire sheet (as suggested by material design)
-  final bool closeBarAutoAppear; //TODO
 
   //-------------------------Local Variables
 
@@ -136,18 +125,22 @@ class MaterialSheet extends StatelessWidget {
               app,
               new ScopedModelDescendant<SheetState>(
                 builder: (context, child, model) => new SheetWidget(
-                  sheet: sheet,
-                  attachment: attachment,
+                  closeSheetFunc: closeSheet,
 
                   getOpenPercent: getOpenPercent,
                   setOpenPercent: setOpenPercent,
+
+                  sheet: sheet,
+                  attachment: attachment,
 
                   position: position,
                   type: type,
                   placement: placement,
                   backBtnClosesSheet: backBtnClosesSheet,
+                  autoOpenOrCloseIndicator: autoOpenOrCloseIndicator,
 
-                  closeSheetFunc: closeSheet,
+                  swipeToOpen: swipeToOpen,
+                  swipeToClose: swipeToClose,
 
                   //TODO... in progress
                   sheetMin: sheetMin,
@@ -171,34 +164,45 @@ class SheetWidget extends StatefulWidget {
 
   const SheetWidget({
     Key key,
-    @required this.sheet,
-    @required this.attachment,
+
+    @required this.closeSheetFunc,
 
     @required this.getOpenPercent,
     @required this.setOpenPercent,
+
+    @required this.sheet,
+    @required this.attachment,
+
     @required this.position,
     @required this.type,
     @required this.placement,
     @required this.backBtnClosesSheet,
+    @required this.autoOpenOrCloseIndicator,
 
-    @required this.closeSheetFunc,
+    @required this.swipeToOpen,
+    @required this.swipeToClose,
 
     //TODO... in progress
     @required this.sheetMin,
     @required this.sheetMax,
   }) : super(key: key);
 
-  final Widget sheet;
-  final Widget attachment;
+  final Function closeSheetFunc;
 
   final Function getOpenPercent;
   final Function setOpenPercent;
+
+  final Widget sheet;
+  final Widget attachment;
+
   final sheetPosition position;
   final sheetType type;
   final attachmentPlacement placement;
   final bool backBtnClosesSheet;
+  final bool autoOpenOrCloseIndicator;
 
-  final Function closeSheetFunc;
+  final bool swipeToOpen;
+  final bool swipeToClose;
 
   //TODO... in progress
   final double sheetMin;
@@ -214,36 +218,43 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Parameters
 
-  static Widget sheet;
-  static Widget attachment;
+  static Function closeSheetFunc;
 
   static Function getOpenPercent;
   static Function setOpenPercent;
+
+  static Widget sheet;
+  static Widget attachment;
+
   static sheetPosition position;
   static sheetType type;
   static attachmentPlacement placement;
   static bool backBtnClosesSheet;
+  static bool autoOpenOrCloseIndicator;
 
-  static Function closeSheetFunc;
+  static bool swipeToOpen;
+  static bool swipeToClose;
 
   //TODO... in progress
   static double sheetMin;
   static double sheetMax;
 
-
   void _tieVarsOnInit() {
-    sheet = widget.sheet;
-    attachment = widget.attachment;
+    closeSheetFunc = widget.closeSheetFunc;
 
     getOpenPercent = widget.getOpenPercent;
     setOpenPercent = widget.setOpenPercent;
 
+    sheet = widget.sheet;
+    attachment = widget.attachment;
     position = widget.position;
     type = widget.type;
     placement = widget.placement;
     backBtnClosesSheet = widget.backBtnClosesSheet;
+    autoOpenOrCloseIndicator = widget.autoOpenOrCloseIndicator;
 
-    closeSheetFunc = widget.closeSheetFunc;
+    swipeToOpen = widget.swipeToOpen;
+    swipeToClose = widget.swipeToClose;
 
     //TODO.... in progress
     sheetMin = widget.sheetMin;
@@ -376,6 +387,14 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(getOpenPercent());
   }
 
+  Color _calcIndicatorColor(){
+    if(autoOpenOrCloseIndicator){
+      if(getOpenPercent() > .5) return Colors.black.withOpacity(0.0);
+      else return Colors.black.withOpacity(.5);
+    }
+    else return Colors.transparent;
+  }
+
   //-------------------------Helper Widget Extracts
 
   Widget scrimWidget(){
@@ -404,8 +423,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   {
     Transform mainWidget = new Transform(
       transform: _calcTransform(isWidthMax, sheetWidth, sheetHeight),
-      child:
-      new Flex(
+      child: new Flex(
         direction: (isWidthMax)
             ? Axis.vertical
             : Axis.horizontal,
@@ -429,21 +447,41 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
               color: Colors.transparent,
               child: new IntrinsicWidth(
                 child: new IntrinsicHeight(
-                  child: new Flex(
-                    direction: (isWidthMax)
-                        ? Axis.vertical
-                        : Axis.horizontal,
-                    textDirection: _calcTextDirection(),
-                    verticalDirection: _calcVerticalDirection(),
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      new Expanded(
-                        child: thisSheetWidget,
-                      ),
-                      thisAttachmentWidget,
-                    ],
+                  child:  new SwipeToOpenClose(
+                    isWidthMax: isWidthMax,
+                    position: position,
+                    sheetWidth: sheetWidth,
+                    sheetHeight: sheetHeight,
+                    getOpenPercent: getOpenPercent,
+                    slideUpdateStream: slideUpdateStream,
+                    swipeToOpen: swipeToOpen,
+                    swipeToClose: swipeToClose,
+                    child: new Flex(
+                      direction: (isWidthMax)
+                          ? Axis.vertical
+                          : Axis.horizontal,
+                      textDirection: _calcTextDirection(),
+                      verticalDirection: _calcVerticalDirection(),
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        new Expanded(
+                          child: new Stack(
+                              fit: StackFit.expand,
+                              children: <Widget>[
+                                thisSheetWidget,
+                                new IgnorePointer(
+                                  child: new Container(
+                                    color: _calcIndicatorColor(),
+                                  ),
+                                )
+                              ]
+                          ),
+                        ),
+                        thisAttachmentWidget,
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -461,28 +499,50 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
       return new Stack(
         children: <Widget>[
           mainWidget,
-          new Flex(
-            direction: (isWidthMax)
-                ? Axis.vertical
-                : Axis.horizontal,
-            //ONLY relevant if position is top or bottom
-            textDirection: (position == sheetPosition.right)
-                ? TextDirection.ltr
-                : TextDirection.rtl,
-            //ONLY relevant if position is left or right
-            verticalDirection: (position == sheetPosition.top)
-                ? VerticalDirection.up
-                : VerticalDirection.down,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              new Expanded(
-                child: new Container(),
-              ),
-              thisAttachmentWidget,
-            ],
+          new IgnorePointer(
+            child: new Flex(
+              direction: (isWidthMax)
+                  ? Axis.vertical
+                  : Axis.horizontal,
+              //ONLY relevant if position is top or bottom
+              textDirection: (position == sheetPosition.right)
+                  ? TextDirection.ltr
+                  : TextDirection.rtl,
+              //ONLY relevant if position is left or right
+              verticalDirection: (position == sheetPosition.top)
+                  ? VerticalDirection.up
+                  : VerticalDirection.down,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                new Expanded(
+                  child: new Container(),
+                ),
+                thisAttachmentWidget,
+              ],
+            ),
           ),
         ],
+      );
+    }
+  }
+
+  Widget attachmentWidget(){
+
+    if(attachment == null && swipeToOpen){
+      return Container(
+        child: (attachment != null) ?
+        attachment : new Icon(
+          Icons.attachment,
+          color: Colors.transparent,
+        ),
+      );
+    }
+    else{
+      return Container(
+        color: Colors.greenAccent,
+        child: (attachment != null) ?
+        attachment : null,
       );
     }
   }
@@ -514,25 +574,12 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
       child: sheet,
     );
 
-    Widget thisAttachmentWidget = new Container(
-      color: Colors.greenAccent,
-      child: (attachment != null) ? attachment : null,
-    );
+    Widget thisAttachmentWidget = attachmentWidget();
 
     return new Stack(
       children: <Widget>[
         scrimWidget(),
         sheetAndAttachmentWidget(isWidthMax, sheetWidth, sheetHeight, thisSheetWidget, thisAttachmentWidget),
-        new SwipeToOpenClose(
-          isWidthMax: isWidthMax,
-          position: position,
-          sheetWidth: sheetWidth,
-          sheetHeight: sheetHeight,
-
-          getOpenPercent: getOpenPercent,
-
-          slideUpdateStream: slideUpdateStream,
-        ),
       ],
     );
   }
@@ -548,9 +595,14 @@ class SwipeToOpenClose extends StatefulWidget {
     @required this.sheetWidth,
     @required this.sheetHeight,
 
+    @required this.swipeToOpen,
+    @required this.swipeToClose,
+
     @required this.getOpenPercent,
 
     @required this.slideUpdateStream,
+
+    @required this.child,
   });
 
   final bool isWidthMax;
@@ -558,15 +610,20 @@ class SwipeToOpenClose extends StatefulWidget {
   final double sheetWidth;
   final double sheetHeight;
 
+  final bool swipeToOpen;
+  final bool swipeToClose;
+
   final Function getOpenPercent;
 
   final StreamController<double> slideUpdateStream;
+
+  final Widget child;
 
   @override
   _SwipeToOpenCloseState createState() => _SwipeToOpenCloseState();
 }
 
-class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with TickerProviderStateMixin{
+class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerProviderStateMixin{
 
   Offset dragStart;
   double slideStart;
@@ -574,14 +631,25 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with TickerProvider
   AnimatedOpenOrClose animatedOpenOrClose;
 
   onDragStart(DragStartDetails details){
-    dragStart = details.globalPosition;
     slideStart = widget.getOpenPercent();
+    dragStart = details.globalPosition;
+
+    //NOTE: because our animation will complete any drag...
+    //whenever we drag we will begin dragging our slideStart will be 0.0 or 1.0
+    if(slideStart == 0.0 && widget.swipeToOpen == false)
+      slideStart = null;
+    if(slideStart == 1.0 && widget.swipeToClose == false)
+      slideStart = null;
   }
 
   onDragUpdate(DragUpdateDetails details){
     if(dragStart != null){
       final dragCurrent = details.globalPosition;
-      final dragChange = dragStart - dragCurrent;
+      var dragChange;
+      if(widget.position == sheetPosition.left || widget.position == sheetPosition.top)
+        dragChange = dragCurrent - dragStart;
+      else
+        dragChange = dragStart - dragCurrent;
 
       double slideAdded;
 
@@ -596,13 +664,22 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with TickerProvider
 
   onDragEnd(DragEndDetails details){
     dragStart = null;
+    animateOpenClose((widget.getOpenPercent() > 0.5) ? 1.0 : 0.0);
+  }
 
-    animatedOpenOrClose = new AnimatedOpenOrClose(
-      startOpenPercent: widget.getOpenPercent(),
-      goalOpenPercent: (widget.getOpenPercent() > 0.5) ? 1.0 : 0.0,
-      slideUpdateStream: widget.slideUpdateStream,
-      vsync: this,
-    );
+  animateOpenClose(double goalOpenPercent){
+    if(animatedOpenOrClose == null){
+      animatedOpenOrClose = new AnimatedOpenOrClose(
+        startOpenPercent: widget.getOpenPercent(),
+        goalOpenPercent: goalOpenPercent,
+        slideUpdateStream: widget.slideUpdateStream,
+        vsync: this,
+      );
+    }
+    else{
+      animatedOpenOrClose.startOpenPercent = widget.getOpenPercent();
+      animatedOpenOrClose.goalOpenPercent = goalOpenPercent;
+    }
 
     animatedOpenOrClose.run();
   }
@@ -619,6 +696,7 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with TickerProvider
       onHorizontalDragStart: (widget.isWidthMax) ? null : onDragStart,
       onHorizontalDragUpdate: (widget.isWidthMax) ? null : onDragUpdate,
       onHorizontalDragEnd: (widget.isWidthMax) ? null : onDragEnd,
+      child: widget.child,
     );
   }
 }
@@ -629,8 +707,8 @@ class AnimatedOpenOrClose{
 
   AnimationController completionAnimationController;
 
-  final startOpenPercent;
-  final goalOpenPercent;
+  double startOpenPercent;
+  double goalOpenPercent;
 
   AnimatedOpenOrClose({
     this.startOpenPercent,
@@ -657,8 +735,7 @@ class AnimatedOpenOrClose{
   }
 
   run() async{
-    await completionAnimationController.forward(from: 0.0);
-    dispose();
+    completionAnimationController.forward(from: 0.0);
   }
 
   dispose(){

@@ -77,15 +77,16 @@ class MaterialSheetApp extends StatelessWidget {
           ],
         ),
       ),
+      /*
       attachment: new Icon(
         Icons.attachment,
         color: Colors.white,
       ),
+      */
       //-----Other Vars
       startOpen: true,
-      position: sheetPosition.right,
-      placement: attachmentPlacement.inside,
-      type: sheetType.modal,
+      position: sheetPosition.left,
+      type: sheetType.persistent,
       sheetMin: 150.0,
     );
 
