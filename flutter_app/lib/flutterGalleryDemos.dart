@@ -412,30 +412,17 @@ class _NavigationDrawerState extends State<NavigationDrawer>{
 
 //-------------------------Drawer From List Demo-------------------------
 
-enum _MaterialListType {
-  /// A list tile that contains a single line of text.
-  oneLine,
-
-  /// A list tile that contains a [CircleAvatar] followed by a single line of text.
-  oneLineWithAvatar,
-
-  /// A list tile that contains two lines of text.
-  twoLine,
-
-  /// A list tile that contains three lines of text.
-  threeLine,
-}
+enum _MaterialListType {oneLine, oneLineWithAvatar, twoLine, threeLine}
 
 class ListDemo extends StatefulWidget {
   const ListDemo({ Key key }) : super(key: key);
-
-  static const String routeName = '/material/list';
 
   @override
   _ListDemoState createState() => new _ListDemoState();
 }
 
 class _ListDemoState extends State<ListDemo> {
+
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
   PersistentBottomSheetController<Null> _bottomSheet;
@@ -445,161 +432,20 @@ class _ListDemoState extends State<ListDemo> {
   bool _showIcons = false;
   bool _showDividers = false;
   bool _reverseSort = false;
-  List<String> items = <String>[
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-  ];
+  List<String> items = <String>['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
-  void changeItemType(_MaterialListType type) {
-    setState(() {
-      _itemType = type;
-    });
-    _bottomSheet?.setState(() { });
-  }
+  //-------------------------Helper Functions
+  //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
-  void _showConfigurationSheet() {
-    final PersistentBottomSheetController<Null> bottomSheet = scaffoldKey.currentState.showBottomSheet((BuildContext bottomSheetContext) {
-      return new Container(
-        decoration: const BoxDecoration(
-          border: const Border(top: const BorderSide(color: Colors.black26)),
-        ),
-        child: new ListView(
-          shrinkWrap: true,
-          primary: false,
-          children: <Widget>[
-            new MergeSemantics(
-              child: new ListTile(
-                  dense: true,
-                  title: const Text('One-line'),
-                  trailing: new Radio<_MaterialListType>(
-                    value: _showAvatars ? _MaterialListType.oneLineWithAvatar : _MaterialListType.oneLine,
-                    groupValue: _itemType,
-                    onChanged: changeItemType,
-                  )
-              ),
-            ),
-            new MergeSemantics(
-              child: new ListTile(
-                  dense: true,
-                  title: const Text('Two-line'),
-                  trailing: new Radio<_MaterialListType>(
-                    value: _MaterialListType.twoLine,
-                    groupValue: _itemType,
-                    onChanged: changeItemType,
-                  )
-              ),
-            ),
-            new MergeSemantics(
-              child: new ListTile(
-                dense: true,
-                title: const Text('Three-line'),
-                trailing: new Radio<_MaterialListType>(
-                  value: _MaterialListType.threeLine,
-                  groupValue: _itemType,
-                  onChanged: changeItemType,
-                ),
-              ),
-            ),
-            new MergeSemantics(
-              child: new ListTile(
-                dense: true,
-                title: const Text('Show avatar'),
-                trailing: new Checkbox(
-                  value: _showAvatars,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _showAvatars = value;
-                    });
-                    _bottomSheet?.setState(() { });
-                  },
-                ),
-              ),
-            ),
-            new MergeSemantics(
-              child: new ListTile(
-                dense: true,
-                title: const Text('Show icon'),
-                trailing: new Checkbox(
-                  value: _showIcons,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _showIcons = value;
-                    });
-                    _bottomSheet?.setState(() { });
-                  },
-                ),
-              ),
-            ),
-            new MergeSemantics(
-              child: new ListTile(
-                dense: true,
-                title: const Text('Show dividers'),
-                trailing: new Checkbox(
-                  value: _showDividers,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _showDividers = value;
-                    });
-                    _bottomSheet?.setState(() { });
-                  },
-                ),
-              ),
-            ),
-            new MergeSemantics(
-              child: new ListTile(
-                dense: true,
-                title: const Text('Dense layout'),
-                trailing: new Checkbox(
-                  value: _dense,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _dense = value;
-                    });
-                    _bottomSheet?.setState(() { });
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-
-    setState(() {
-      _bottomSheet = bottomSheet;
-    });
-
-    _bottomSheet.closed.whenComplete(() {
-      if (mounted) {
-        setState(() {
-          _bottomSheet = null;
-        });
-      }
-    });
-  }
-
-  Widget buildListTile(BuildContext context, String item) {
-    Widget secondary;
-    if (_itemType == _MaterialListType.twoLine) {
-      secondary = const Text('Additional item information.');
-    } else if (_itemType == _MaterialListType.threeLine) {
-      secondary = const Text(
-        'Even more additional list item information appears on line three.',
-      );
-    }
-    return new MergeSemantics(
-      child: new ListTile(
-        isThreeLine: _itemType == _MaterialListType.threeLine,
-        dense: _dense,
-        leading: _showAvatars ? new ExcludeSemantics(child: new CircleAvatar(child: new Text(item))) : null,
-        title: new Text('This item represents $item.'),
-        subtitle: secondary,
-        trailing: _showIcons ? new Icon(Icons.info, color: Theme.of(context).disabledColor) : null,
-      ),
-    );
-  }
+  MaterialSheet matSheet;
+  openInstant() => matSheet.openInstantaneous();
+  closeInstant() => matSheet.closeInstantaneous();
+  openAnim() => matSheet.openAnimated();
+  closeAnim() => matSheet.closeAnimated();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+
     final String layoutText = _dense ? ' \u2013 Dense' : '';
     String itemTypeText;
     switch (_itemType) {
@@ -619,33 +465,200 @@ class _ListDemoState extends State<ListDemo> {
     if (_showDividers)
       listTiles = ListTile.divideTiles(context: context, tiles: listTiles);
 
-    return new Scaffold(
-      key: scaffoldKey,
-      appBar: new AppBar(
-        title: new Text('Scrolling list\n$itemTypeText$layoutText'),
-        actions: <Widget>[
-          new IconButton(
-            icon: const Icon(Icons.sort_by_alpha),
-            tooltip: 'Sort',
-            onPressed: () {
-              setState(() {
-                _reverseSort = !_reverseSort;
-                items.sort((String a, String b) => _reverseSort ? b.compareTo(a) : a.compareTo(b));
-              });
-            },
+    matSheet = new MaterialSheet(
+        app: new MaterialApp(
+          home: new Scaffold(
+            key: scaffoldKey,
+            appBar: new AppBar(
+              title: new Text('Scrolling list\n$itemTypeText$layoutText'),
+              actions: <Widget>[
+                new IconButton(
+                  icon: const Icon(Icons.sort_by_alpha),
+                  tooltip: 'Sort',
+                  onPressed: () {
+                    setState(() {
+                      _reverseSort = !_reverseSort;
+                      items.sort((String a, String b) => _reverseSort ? b.compareTo(a) : a.compareTo(b));
+                    });
+                  },
+                ),
+                new IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  tooltip: 'Show menu',
+                  onPressed: openAnim,
+                ),
+              ],
+            ),
+            body: new Scrollbar(
+              child: new ListView(
+                padding: new EdgeInsets.symmetric(vertical: _dense ? 4.0 : 8.0),
+                children: listTiles.toList(),
+              ),
+            ),
           ),
-          new IconButton(
-            icon: const Icon(Icons.more_vert),
-            tooltip: 'Show menu',
-            onPressed: _bottomSheet == null ? _showConfigurationSheet : null,
-          ),
-        ],
-      ),
-      body: new Scrollbar(
-        child: new ListView(
-          padding: new EdgeInsets.symmetric(vertical: _dense ? 4.0 : 8.0),
-          children: listTiles.toList(),
         ),
+
+        sheet:
+        new Container(
+          decoration: const BoxDecoration(
+            border: const Border(top: const BorderSide(color: Colors.black26)),
+          ),
+          child: new ListView(
+            //shrinkWrap: true,
+            //primary: false,
+            children: <Widget>[
+              new Text("hi"),
+            /*
+              new MergeSemantics(
+                child: new ListTile(
+                    dense: true,
+                    title: const Text('One-line'),
+                    trailing: new Radio<_MaterialListType>(
+                      value: _showAvatars ? _MaterialListType.oneLineWithAvatar : _MaterialListType.oneLine,
+                      groupValue: _itemType,
+                      onChanged: changeItemType,
+                    )
+                ),
+              ),
+              new MergeSemantics(
+                child: new ListTile(
+                    dense: true,
+                    title: const Text('Two-line'),
+                    trailing: new Radio<_MaterialListType>(
+                      value: _MaterialListType.twoLine,
+                      groupValue: _itemType,
+                      onChanged: changeItemType,
+                    )
+                ),
+              ),
+              new MergeSemantics(
+                child: new ListTile(
+                  dense: true,
+                  title: const Text('Three-line'),
+                  trailing: new Radio<_MaterialListType>(
+                    value: _MaterialListType.threeLine,
+                    groupValue: _itemType,
+                    onChanged: changeItemType,
+                  ),
+                ),
+              ),
+              new MergeSemantics(
+                child: new ListTile(
+                  dense: true,
+                  title: const Text('Show avatar'),
+                  trailing: new Checkbox(
+                    value: _showAvatars,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _showAvatars = value;
+                      });
+                      _bottomSheet?.setState(() { });
+                    },
+                  ),
+                ),
+              ),
+              new MergeSemantics(
+                child: new ListTile(
+                  dense: true,
+                  title: const Text('Show icon'),
+                  trailing: new Checkbox(
+                    value: _showIcons,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _showIcons = value;
+                      });
+                      _bottomSheet?.setState(() { });
+                    },
+                  ),
+                ),
+              ),
+              new MergeSemantics(
+                child: new ListTile(
+                  dense: true,
+                  title: const Text('Show dividers'),
+                  trailing: new Checkbox(
+                    value: _showDividers,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _showDividers = value;
+                      });
+                      _bottomSheet?.setState(() { });
+                    },
+                  ),
+                ),
+              ),
+              new MergeSemantics(
+                child: new ListTile(
+                  dense: true,
+                  title: const Text('Dense layout'),
+                  trailing: new Checkbox(
+                    value: _dense,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _dense = value;
+                      });
+                      _bottomSheet?.setState(() { });
+                    },
+                  ),
+                ),
+              ),
+              */
+            ],
+          ),
+        ),
+      type: sheetType.persistent,
+    );
+
+    return  matSheet;
+  }
+
+  //--------------------------------------------------
+
+
+  void changeItemType(_MaterialListType type) {
+    setState(() {
+      _itemType = type;
+    });
+    //_bottomSheet?.setState(() { }); //TODO... check if this is needed...
+  }
+  /*
+
+  void _showConfigurationSheet() {
+    final PersistentBottomSheetController<Null> bottomSheet = scaffoldKey.currentState.showBottomSheet((BuildContext bottomSheetContext) {
+      return
+    });
+
+    setState(() {
+      _bottomSheet = bottomSheet;
+    });
+
+    _bottomSheet.closed.whenComplete(() {
+      if (mounted) {
+        setState(() {
+          _bottomSheet = null;
+        });
+      }
+    });
+  }
+  */
+
+  Widget buildListTile(BuildContext context, String item) {
+    Widget secondary;
+    if (_itemType == _MaterialListType.twoLine) {
+      secondary = const Text('Additional item information.');
+    } else if (_itemType == _MaterialListType.threeLine) {
+      secondary = const Text(
+        'Even more additional list item information appears on line three.',
+      );
+    }
+    return new MergeSemantics(
+      child: new ListTile(
+        isThreeLine: _itemType == _MaterialListType.threeLine,
+        dense: _dense,
+        leading: _showAvatars ? new ExcludeSemantics(child: new CircleAvatar(child: new Text(item))) : null,
+        title: new Text('This item represents $item.'),
+        subtitle: secondary,
+        trailing: _showIcons ? new Icon(Icons.info, color: Theme.of(context).disabledColor) : null,
       ),
     );
   }

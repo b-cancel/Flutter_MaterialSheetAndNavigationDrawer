@@ -30,23 +30,23 @@ class MaterialSheet extends StatelessWidget{
 
   MaterialSheet(
       {Key key,
-      @required this.app,
-      @required this.sheet,
-      this.attachment,
+        @required this.app,
+        @required this.sheet,
+        this.attachment,
 
-      this.startOpen: false,
-      this.position: sheetPosition.bottom,
-      this.type: sheetType.modal,
-      this.placement: attachmentPlacement.inside,
-      this.backBtnClosesSheet: true,
-      this.autoOpenOrCloseIndicator: false,
+        this.startOpen: false,
+        this.position: sheetPosition.bottom,
+        this.type: sheetType.modal,
+        this.placement: attachmentPlacement.inside,
+        this.backBtnClosesSheet: true,
+        this.autoOpenOrCloseIndicator: false,
 
-      this.swipeToOpen: true,
-      this.swipeToClose: true,
+        this.swipeToOpen: true,
+        this.swipeToClose: true,
 
-      //TODO... In Progress
-      this.sheetMin,
-      this.sheetMax,
+        //TODO... In Progress
+        this.sheetMin,
+        this.sheetMax,
       })
       : super(key: key);
 
@@ -183,7 +183,9 @@ class SheetWidget extends StatefulWidget {
   _SheetWidgetState createState() => new _SheetWidgetState();
 }
 
+var wholeKey = new GlobalKey();
 var sheetKey = new GlobalKey();
+var attachKey = new GlobalKey();
 
 class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
@@ -360,9 +362,40 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Helper Widget Extracts
 
+  Widget sheetWidget(double w, double h){
+    return new Container(
+      width: w ?? null,
+      height: h ?? null,
+      key: sheetKey,
+      child: sheet,
+    );
+    /*
+    new Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        new Container(
+          key: sheetKey,
+          child: sheet,
+        ),
+        new IgnorePointer(
+          child: new Container(
+            color: _calcIndicatorColor(),
+          ),
+        )
+      ]
+  );
+  */
+  }
+
   Widget attachmentWidget(){
-    if(attachment == null && swipeToOpen) return new Icon(Icons.attachment, color: Colors.transparent);
-    else return Container( child: (attachment != null) ? attachment : null);
+    Widget currAttach = attachment;
+    if(currAttach == null && swipeToOpen)
+      currAttach = new Icon(Icons.attachment, color: Colors.transparent);
+
+    return new Container(
+      key: attachKey,
+      child: (currAttach != null) ? currAttach : null,
+    );
   }
 
   Widget scrimWidget(){
@@ -382,13 +415,23 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
       return new Container();
   }
 
-  Widget sheetAndAttachmentWidget(
-      bool isWidthMax,
-      double sheetWidth,
-      double sheetHeight,
-      Widget thisSheetWidget,
-      Widget thisAttachmentWidget)
-  {
+  Widget sheetAndAttachmentWidget(){
+
+    //both of these are read in by build in the first build phase
+    double wholeWidth = wholeKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
+    double wholeHeight = wholeKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
+    double attachWidth = attachKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
+    double attachHeight = attachKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
+
+    //TODO... this should instead by calculated and set on the 2nd build phase
+    double sheetWidth = sheetKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
+    double sheetHeight = sheetKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
+
+    bool isWidthMax = (position == sheetPosition.bottom || position == sheetPosition.top);
+
+    Widget thisSheetWidget = sheetWidget(null, null);
+    Widget thisAttachmentWidget = attachmentWidget();
+
     Transform mainWidget = new Transform(
       transform: _calcTransform(isWidthMax, sheetWidth, sheetHeight),
       child: new Flex(
@@ -413,42 +456,26 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
             constraints: _calcBoxConstraints(isWidthMax),
             child: new Container(
               color: Colors.transparent,
-              child: new IntrinsicWidth(
-                child: new IntrinsicHeight(
-                  child:  new SwipeToOpenClose(
-                    isWidthMax: isWidthMax,
-                    position: position,
-                    sheetWidth: sheetWidth,
-                    sheetHeight: sheetHeight,
-                    swipeToOpen: swipeToOpen,
-                    swipeToClose: swipeToClose,
-                    child: new Flex(
-                      direction: (isWidthMax)
-                          ? Axis.vertical
-                          : Axis.horizontal,
-                      textDirection: _calcTextDirection(),
-                      verticalDirection: _calcVerticalDirection(),
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        new Expanded(
-                          child: new Stack(
-                              fit: StackFit.expand,
-                              children: <Widget>[
-                                thisSheetWidget,
-                                new IgnorePointer(
-                                  child: new Container(
-                                    color: _calcIndicatorColor(),
-                                  ),
-                                )
-                              ]
-                          ),
-                        ),
-                        thisAttachmentWidget,
-                      ],
-                    ),
-                  ),
+              child: new SwipeToOpenClose(
+                isWidthMax: isWidthMax,
+                position: position,
+                sheetWidth: sheetWidth,
+                sheetHeight: sheetHeight,
+                swipeToOpen: swipeToOpen,
+                swipeToClose: swipeToClose,
+                child: new Flex(
+                  direction: (isWidthMax)
+                      ? Axis.vertical
+                      : Axis.horizontal,
+                  textDirection: _calcTextDirection(),
+                  verticalDirection: _calcVerticalDirection(),
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    thisSheetWidget,
+                    thisAttachmentWidget,
+                  ],
                 ),
               ),
             ),
@@ -497,34 +524,15 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
-
-    //---reading in both values
-
-    double sheetWidth = sheetKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
-    double sheetHeight = sheetKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
-
     //---Required to read in sheetWidth and sheetHeight
     timesBuilt++;
-    if(timesBuilt < requiredBuildsPerChange)
-      rebuildAsync();
-    else
-      timesBuilt = 0;
-
-    //---simplifies ops below
-    bool isWidthMax =
-    (position == sheetPosition.bottom || position == sheetPosition.top);
-
-    Widget thisSheetWidget = new Container(
-      key: sheetKey,
-      child: sheet,
-    );
-
-    Widget thisAttachmentWidget = attachmentWidget();
+    if(timesBuilt < requiredBuildsPerChange) rebuildAsync();
+    else timesBuilt = 0;
 
     return new Stack(
       children: <Widget>[
         scrimWidget(),
-        sheetAndAttachmentWidget(isWidthMax, sheetWidth, sheetHeight, thisSheetWidget, thisAttachmentWidget),
+        sheetAndAttachmentWidget(),
       ],
     );
   }
@@ -671,18 +679,18 @@ class OpenOrCloseAnimation{
     @required this.vsync,
   }){
     completionAnimationController = new AnimationController(
-        duration: Duration(milliseconds: millisecondsToComplete),
-        vsync: vsync,
+      duration: Duration(milliseconds: millisecondsToComplete),
+      vsync: vsync,
     )
-    ..addListener((){
-      final slidePercent = lerpDouble(
-        startOpenPercent,
-        goalOpenPercent,
-        completionAnimationController.value,
-      );
+      ..addListener((){
+        final slidePercent = lerpDouble(
+          startOpenPercent,
+          goalOpenPercent,
+          completionAnimationController.value,
+        );
 
-      slideUpdateStream.add(slidePercent);
-    });
+        slideUpdateStream.add(slidePercent);
+      });
   }
 
   run() async{
