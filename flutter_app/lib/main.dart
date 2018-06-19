@@ -1,96 +1,20 @@
 import 'package:flutter/material.dart';
-import 'materialSheet.dart';
 
-void main() => runApp(new MaterialSheetApp());
+//Demos
+import 'flutterGalleryDemos.dart';
+import 'materialDemos.dart';
+import 'otherDemos.dart';
 
-class MaterialSheetApp extends StatelessWidget {
+//TODO.. materialApp plans for android slide down menu
 
-  //-------------------------Helper Functions
-  //NOTE: these are required if you want buttons that will be opening or closing the sheet
+//-------------------------Main Functions For Testing-------------------------
 
-  MaterialSheet matSheet;
-  openInstant() => matSheet.openInstantaneous();
-  closeInstant() => matSheet.closeInstantaneous();
-  openAnim() => matSheet.openAnimated();
-  closeAnim() => matSheet.closeAnimated();
+//---flutter gallery
+//void main() => runApp(new MaterialApp( home: new PersistentBottomSheet()));
+//void main() => runApp(new ModalBottomSheet());
+void main() => runApp(new NavigationDrawer());
 
-  //-------------------------Build Function
+//---material
 
-  @override
-  Widget build(BuildContext context) {
-    matSheet = new MaterialSheet(
-      //-----Widgets
-      app: new Container(
-          color: Colors.black,
-          child: new Center(
-            child: new Container(
-              color: Colors.purple,
-              child: new Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  new Container(
-                    color: Colors.red,
-                    child: new FlatButton(
-                      onPressed: () => closeAnim(),
-                      child: new Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  new Container(
-                    color: Colors.blue,
-                    child: new FlatButton(
-                      onPressed: () => openInstant(),
-                      child: new Icon(
-                        Icons.open_in_browser,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )),
-      sheet: new Container(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            new Container(
-              color: Colors.red,
-              child: new FlatButton(
-                onPressed: () => closeAnim(),
-                child: new Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            new Container(
-              color: Colors.blue,
-              child: new FlatButton(
-                onPressed: () => openInstant(),
-                child: new Icon(
-                  Icons.open_in_browser,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      /*
-      attachment: new Icon(
-        Icons.attachment,
-        color: Colors.white,
-      ),
-      */
-      //-----Other Vars
-      startOpen: true,
-      position: sheetPosition.left,
-      sheetMin: 150.0,
-    );
-
-    return matSheet;
-  }
-}
+//---other
+//void main() => runApp(new MaterialSheetTestApp());

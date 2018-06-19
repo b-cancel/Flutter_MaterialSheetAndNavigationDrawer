@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-//TODO... test that the sheet expands depending on the context inside of it
 //TODO... refactor like crazy
 //TODO... added need options as consequence of sheetMin and sheetMax
 //TODO... add vertical and horizontal scrolling
@@ -361,6 +360,11 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Helper Widget Extracts
 
+  Widget attachmentWidget(){
+    if(attachment == null && swipeToOpen) return new Icon(Icons.attachment, color: Colors.transparent);
+    else return Container( child: (attachment != null) ? attachment : null);
+  }
+
   Widget scrimWidget(){
     if(type == sheetType.modal){
       if(openPercent != 0.0){
@@ -489,26 +493,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     }
   }
 
-  Widget attachmentWidget(){
-
-    if(attachment == null && swipeToOpen){
-      return Container(
-        child: (attachment != null) ?
-        attachment : new Icon(
-          Icons.attachment,
-          color: Colors.transparent,
-        ),
-      );
-    }
-    else{
-      return Container(
-        color: Colors.greenAccent,
-        child: (attachment != null) ?
-        attachment : null,
-      );
-    }
-  }
-
   //-------------------------Build Method
 
   @override
@@ -532,7 +516,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
     Widget thisSheetWidget = new Container(
       key: sheetKey,
-      color: Colors.amberAccent,
       child: sheet,
     );
 
