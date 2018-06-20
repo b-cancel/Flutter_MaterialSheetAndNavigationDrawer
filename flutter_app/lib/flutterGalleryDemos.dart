@@ -425,7 +425,6 @@ class _ListDemoState extends State<ListDemo> {
 
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  PersistentBottomSheetController<Null> _bottomSheet;
   _MaterialListType _itemType = _MaterialListType.threeLine;
   bool _dense = false;
   bool _showAvatars = true;
@@ -433,6 +432,18 @@ class _ListDemoState extends State<ListDemo> {
   bool _showDividers = false;
   bool _reverseSort = false;
   List<String> items = <String>['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+
+  IconData _backIcon() {
+    switch (Theme.of(context).platform) {
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+        return Icons.arrow_back;
+      case TargetPlatform.iOS:
+        return Icons.arrow_back_ios;
+    }
+    assert(false);
+    return null;
+  }
 
   //-------------------------Helper Functions
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
@@ -445,6 +456,9 @@ class _ListDemoState extends State<ListDemo> {
 
   @override
   Widget build(BuildContext context){
+    print("after rebuild $_showAvatars");
+
+    const scaffColor = Color(0xfffafafa); //manually read in from Theme.of(context).scaffoldBackgroundColor
 
     final String layoutText = _dense ? ' \u2013 Dense' : '';
     String itemTypeText;
@@ -465,11 +479,19 @@ class _ListDemoState extends State<ListDemo> {
     if (_showDividers)
       listTiles = ListTile.divideTiles(context: context, tiles: listTiles);
 
+    print("after after rebuild $_showAvatars");
+
     matSheet = new MaterialSheet(
         app: new MaterialApp(
           home: new Scaffold(
             key: scaffoldKey,
             appBar: new AppBar(
+              leading: new IconButton(
+                icon: new Icon(_backIcon()),
+                alignment: Alignment.centerLeft,
+                tooltip: 'Back',
+                onPressed: () => print("there is nothing to Pop"),
+              ),
               title: new Text('Scrolling list\n$itemTypeText$layoutText'),
               actions: <Widget>[
                 new IconButton(
@@ -497,119 +519,109 @@ class _ListDemoState extends State<ListDemo> {
             ),
           ),
         ),
-
-        sheet:
-        new Container(
+        sheet: new Container(
           decoration: const BoxDecoration(
             border: const Border(top: const BorderSide(color: Colors.black26)),
+            color: scaffColor,
           ),
           child: new ListView(
-            //shrinkWrap: true,
-            //primary: false,
+            shrinkWrap: true,
+            primary: false, //NOTE: if this is commented out behavior of scrolling will supercede that of closing the sheet
             children: <Widget>[
-              new Text("hi"),
-            /*
-              new MergeSemantics(
-                child: new ListTile(
-                    dense: true,
-                    title: const Text('One-line'),
-                    trailing: new Radio<_MaterialListType>(
-                      value: _showAvatars ? _MaterialListType.oneLineWithAvatar : _MaterialListType.oneLine,
-                      groupValue: _itemType,
-                      onChanged: changeItemType,
-                    )
-                ),
-              ),
-              new MergeSemantics(
-                child: new ListTile(
-                    dense: true,
-                    title: const Text('Two-line'),
-                    trailing: new Radio<_MaterialListType>(
-                      value: _MaterialListType.twoLine,
-                      groupValue: _itemType,
-                      onChanged: changeItemType,
-                    )
-                ),
-              ),
-              new MergeSemantics(
-                child: new ListTile(
+              new ListTile(
                   dense: true,
-                  title: const Text('Three-line'),
+                  title: const Text('One-line'),
                   trailing: new Radio<_MaterialListType>(
-                    value: _MaterialListType.threeLine,
+                    value: _showAvatars ? _MaterialListType.oneLineWithAvatar : _MaterialListType.oneLine,
                     groupValue: _itemType,
                     onChanged: changeItemType,
-                  ),
-                ),
+                  )
               ),
-              new MergeSemantics(
-                child: new ListTile(
+              new ListTile(
                   dense: true,
-                  title: const Text('Show avatar'),
-                  trailing: new Checkbox(
-                    value: _showAvatars,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _showAvatars = value;
-                      });
-                      _bottomSheet?.setState(() { });
-                    },
-                  ),
+                  title: const Text('Two-line'),
+                  trailing: new Radio<_MaterialListType>(
+                    value: _MaterialListType.twoLine,
+                    groupValue: _itemType,
+                    onChanged: changeItemType,
+                  )
+              ),
+              new ListTile(
+                dense: true,
+                title: const Text('Three-line'),
+                trailing: new Radio<_MaterialListType>(
+                  value: _MaterialListType.threeLine,
+                  groupValue: _itemType,
+                  onChanged: changeItemType,
                 ),
               ),
-              new MergeSemantics(
-                child: new ListTile(
-                  dense: true,
-                  title: const Text('Show icon'),
-                  trailing: new Checkbox(
-                    value: _showIcons,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _showIcons = value;
-                      });
-                      _bottomSheet?.setState(() { });
-                    },
-                  ),
+              new ListTile(
+                dense: true,
+                title: const Text('Show avatar'),
+                trailing: new Checkbox(
+                  value: _showAvatars,
+                  onChanged: (bool value) {
+
+                    setState(() {
+                      print("VALUE $value");
+                      print("setting state from $_showAvatars");
+                      //_showAvatars = value;
+                      _showAvatars = !_showAvatars;
+                      value = _showAvatars;
+                      print("setting state to $_showAvatars");
+                    });
+                    /*
+                    _bottomSheet?.setState(() { });
+                    */
+                  },
                 ),
               ),
-              new MergeSemantics(
-                child: new ListTile(
-                  dense: true,
-                  title: const Text('Show dividers'),
-                  trailing: new Checkbox(
-                    value: _showDividers,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _showDividers = value;
-                      });
-                      _bottomSheet?.setState(() { });
-                    },
-                  ),
+              new ListTile(
+                dense: true,
+                title: const Text('Show icon'),
+                trailing: new Checkbox(
+                  value: _showIcons,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _showIcons = value;
+                    });
+                  },
                 ),
               ),
-              new MergeSemantics(
-                child: new ListTile(
-                  dense: true,
-                  title: const Text('Dense layout'),
-                  trailing: new Checkbox(
-                    value: _dense,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _dense = value;
-                      });
-                      _bottomSheet?.setState(() { });
-                    },
-                  ),
+              new ListTile(
+                dense: true,
+                title: const Text('Show dividers'),
+                trailing: new Checkbox(
+                  value: _showDividers,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _showDividers = value;
+                    });
+                  },
                 ),
               ),
-              */
+              new ListTile(
+                dense: true,
+                title: const Text('Dense layout'),
+                trailing: new Checkbox(
+                  value: _dense,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _dense = value;
+                    });
+                  },
+                ),
+              ),
             ],
           ),
         ),
       type: sheetType.persistent,
+      autoOpenOrCloseIndicator: true,
     );
 
-    return  matSheet;
+    print("after after after rebuild $_showAvatars");
+
+    return  new Material(child: matSheet);
   }
 
   //--------------------------------------------------
@@ -619,28 +631,7 @@ class _ListDemoState extends State<ListDemo> {
     setState(() {
       _itemType = type;
     });
-    //_bottomSheet?.setState(() { }); //TODO... check if this is needed...
   }
-  /*
-
-  void _showConfigurationSheet() {
-    final PersistentBottomSheetController<Null> bottomSheet = scaffoldKey.currentState.showBottomSheet((BuildContext bottomSheetContext) {
-      return
-    });
-
-    setState(() {
-      _bottomSheet = bottomSheet;
-    });
-
-    _bottomSheet.closed.whenComplete(() {
-      if (mounted) {
-        setState(() {
-          _bottomSheet = null;
-        });
-      }
-    });
-  }
-  */
 
   Widget buildListTile(BuildContext context, String item) {
     Widget secondary;

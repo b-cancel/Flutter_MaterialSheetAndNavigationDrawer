@@ -13,6 +13,8 @@ class MaterialSheetTestApp extends StatelessWidget {
 
   //-------------------------Build Function
 
+  bool someBoolean = true;
+
   @override
   Widget build(BuildContext context) {
     matSheet = new MaterialSheet(
@@ -52,14 +54,6 @@ class MaterialSheetTestApp extends StatelessWidget {
       ),
       sheet: new Container(
         color: Colors.yellowAccent,
-        child: new Icon(
-          Icons.attachment,
-          color: Colors.white,
-        ),
-      ),
-      /*
-      new Container(
-        color: Colors.yellowAccent,
         child: new Center(
           child: new Container(
             child: new Column(
@@ -90,7 +84,6 @@ class MaterialSheetTestApp extends StatelessWidget {
           ),
         ),
       ),
-      */
       attachment: new Container(
         color: Colors.greenAccent,
         child: new Icon(

@@ -184,7 +184,6 @@ class SheetWidget extends StatefulWidget {
 }
 
 var wholeKey = new GlobalKey();
-var sheetKey = new GlobalKey();
 var attachKey = new GlobalKey();
 
 class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
@@ -363,28 +362,23 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   //-------------------------Helper Widget Extracts
 
   Widget sheetWidget(double w, double h){
-    return new Container(
-      width: w ?? null,
-      height: h ?? null,
-      key: sheetKey,
-      child: sheet,
-    );
-    /*
-    new Stack(
-      fit: StackFit.expand,
+    return new Stack(
       children: <Widget>[
         new Container(
-          key: sheetKey,
+          width: (w == 0.0) ? null : w,
+          height: (h == 0.0) ? null : h,
           child: sheet,
         ),
         new IgnorePointer(
           child: new Container(
+            width: (w == 0.0) ? null : w,
+            height: (h == 0.0) ? null : h,
             color: _calcIndicatorColor(),
           ),
         )
       ]
   );
-  */
+
   }
 
   Widget attachmentWidget(){
@@ -423,14 +417,19 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     double attachWidth = attachKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
     double attachHeight = attachKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
 
-    //TODO... this should instead by calculated and set on the 2nd build phase
-    double sheetWidth = sheetKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
-    double sheetHeight = sheetKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
+    double sheetWidth = (wholeWidth == null)
+        ? 0.0
+        : (wholeWidth == attachWidth) ? wholeWidth : wholeWidth - attachWidth;
+    double sheetHeight = (wholeHeight == null)
+        ? 0.0
+        : (wholeHeight == attachHeight) ? wholeHeight : wholeHeight - attachHeight;
 
     bool isWidthMax = (position == sheetPosition.bottom || position == sheetPosition.top);
 
-    Widget thisSheetWidget = sheetWidget(null, null);
+    Widget thisSheetWidget = sheetWidget(sheetWidth, sheetHeight);
     Widget thisAttachmentWidget = attachmentWidget();
+
+    print("-----slkdjf-----");
 
     Transform mainWidget = new Transform(
       transform: _calcTransform(isWidthMax, sheetWidth, sheetHeight),
@@ -455,6 +454,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
           new ConstrainedBox(
             constraints: _calcBoxConstraints(isWidthMax),
             child: new Container(
+              key: wholeKey,
               color: Colors.transparent,
               child: new SwipeToOpenClose(
                 isWidthMax: isWidthMax,
@@ -524,6 +524,9 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
+
+    print("-----upate state-----");
+
     //---Required to read in sheetWidth and sheetHeight
     timesBuilt++;
     if(timesBuilt < requiredBuildsPerChange) rebuildAsync();
@@ -644,8 +647,6 @@ completeOpenOrClose(double goalOpenPercent, int millisecondsToComplete, StreamCo
       slideUpdateStream: slideUpdateStream,
       vsync: ticker,
     );
-
-    print(ticker.toString());
   }
   else{
     _animatedOpenOrClose.startOpenPercent = openPercent;
