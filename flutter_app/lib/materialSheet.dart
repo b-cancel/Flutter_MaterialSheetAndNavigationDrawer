@@ -83,6 +83,15 @@ class MaterialSheet extends StatelessWidget{
 
   //-------------------------Helper Functions
 
+  toggleInstantaneous(){
+    if(openPercent == 1.0 || openPercent == 0.0)
+      (openPercent == 1.0) ? closeInstantaneous() : openInstantaneous();
+  }
+  toggleAnimated(){
+    if(openPercent == 1.0 || openPercent == 0.0)
+      (openPercent == 1.0) ? closeAnimated() : openAnimated();
+  }
+
   //-----Instantaneous
   openInstantaneous() => completeOpenOrClose(1.0, 0, _slideUpdateStream, _animationTicker);
   closeInstantaneous() => completeOpenOrClose(0.0, 0, _slideUpdateStream, _animationTicker);

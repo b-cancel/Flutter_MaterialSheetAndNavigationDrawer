@@ -6,6 +6,8 @@ class MaterialSheetTestApp extends StatelessWidget {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   MaterialSheet matSheet;
+  toggleInstant() => matSheet.toggleInstantaneous();
+  toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
   closeInstant() => matSheet.closeInstantaneous();
   openAnim() => matSheet.openAnimated();

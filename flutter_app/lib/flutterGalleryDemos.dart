@@ -13,6 +13,8 @@ class _PersistentBottomSheetState extends State<PersistentBottomSheet> {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   MaterialSheet matSheet;
+  toggleInstant() => matSheet.toggleInstantaneous();
+  toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
   closeInstant() => matSheet.closeInstantaneous();
   openAnim() => matSheet.openAnimated();
@@ -120,6 +122,8 @@ class ModalBottomSheet extends StatelessWidget {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   MaterialSheet matSheet;
+  toggleInstant() => matSheet.toggleInstantaneous();
+  toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
   closeInstant() => matSheet.closeInstantaneous();
   openAnim() => matSheet.openAnimated();
@@ -203,6 +207,8 @@ class _NavigationDrawerState extends State<NavigationDrawer>{
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   MaterialSheet matSheet;
+  toggleInstant() => matSheet.toggleInstantaneous();
+  toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
   closeInstant() => matSheet.closeInstantaneous();
   openAnim() => matSheet.openAnimated();
@@ -410,7 +416,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>{
   }
 }
 
-//-------------------------Drawer From List Demo-------------------------
+//-------------------------Bottom Sheet From List Demo-------------------------
 
 enum _MaterialListType {oneLine, oneLineWithAvatar, twoLine, threeLine}
 
@@ -449,6 +455,8 @@ class _ListDemoState extends State<ListDemo> {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   MaterialSheet matSheet;
+  toggleInstant() => matSheet.toggleInstantaneous();
+  toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
   closeInstant() => matSheet.closeInstantaneous();
   openAnim() => matSheet.openAnimated();
@@ -507,7 +515,7 @@ class _ListDemoState extends State<ListDemo> {
                 new IconButton(
                   icon: const Icon(Icons.more_vert),
                   tooltip: 'Show menu',
-                  onPressed: openAnim,
+                  onPressed: toggleAnim,
                 ),
               ],
             ),
@@ -616,7 +624,6 @@ class _ListDemoState extends State<ListDemo> {
           ),
         ),
       type: sheetType.persistent,
-      autoOpenOrCloseIndicator: true,
     );
 
     print("after after after rebuild $_showAvatars");
