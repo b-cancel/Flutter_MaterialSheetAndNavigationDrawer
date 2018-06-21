@@ -15,8 +15,6 @@ class MaterialSheetTestApp extends StatelessWidget {
 
   //-------------------------Build Function
 
-  bool someBoolean = true;
-
   @override
   Widget build(BuildContext context) {
     matSheet = new MaterialSheet(
@@ -95,8 +93,11 @@ class MaterialSheetTestApp extends StatelessWidget {
       ),
       //-----Other Vars
       startOpen: true,
-      position: sheetPosition.left,
-      sheetMin: 150.0,
+      position: sheetPosition.right,
+      sheetMin: 250.0,
+      autoOpenOrCloseIndicator: true,
+      type: sheetType.persistent,
+      placement: attachmentPlacement.inside,
     );
 
     return matSheet;

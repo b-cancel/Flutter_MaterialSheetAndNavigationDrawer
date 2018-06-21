@@ -628,7 +628,6 @@ class _ListDemoState extends State<ListDemo> {
         ),
       type: sheetType.persistent,
       swipeToOpen: false,
-      startOpen: true,
     );
 
     return  new Material(child: matSheet);

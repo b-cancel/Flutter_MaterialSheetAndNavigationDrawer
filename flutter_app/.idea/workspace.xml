@@ -18,21 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="materialSheet.dart" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/materialSheet.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="532" column="0" lean-forward="true" selection-start-line="532" selection-start-column="0" selection-end-line="532" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="main.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/main.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="38" />
+            <state relative-caret-position="340">
+              <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -40,11 +30,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="flutterGalleryDemos.dart" pinned="false" current-in-tab="true">
+      <file leaf-file-name="materialSheet.dart" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/materialSheet.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="319">
+              <caret line="439" column="22" lean-forward="true" selection-start-line="439" selection-start-column="22" selection-end-line="439" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="otherDemos.dart" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/otherDemos.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="192">
+              <caret line="96" column="22" lean-forward="true" selection-start-line="96" selection-start-column="22" selection-end-line="96" selection-end-column="22" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="flutterGalleryDemos.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/flutterGalleryDemos.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2207">
-              <caret line="473" column="37" lean-forward="true" selection-start-line="473" selection-start-column="37" selection-end-line="473" selection-end-column="37" />
+            <state relative-caret-position="344">
+              <caret line="629" column="25" lean-forward="false" selection-start-line="629" selection-start-column="25" selection-end-line="629" selection-end-column="25" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -63,8 +75,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>sheeto</find>
-      <find>black</find>
       <find>setting</find>
       <find>animatedopenorclose</find>
       <find>swipeto</find>
@@ -93,6 +103,8 @@
       <find>openpercent</find>
       <find>theme</find>
       <find>after re</find>
+      <find>wholeKey</find>
+      <find>attachKey</find>
     </findStrings>
   </component>
   <component name="FlutterView" splitter-proportion="0.9455587" />
@@ -112,11 +124,11 @@
         <option value="$PROJECT_DIR$/lib/ghflutterwidget.dart" />
         <option value="$PROJECT_DIR$/pubspec.yaml" />
         <option value="$PROJECT_DIR$/lib/flutterAppDemos.dart" />
-        <option value="$PROJECT_DIR$/lib/main.dart" />
-        <option value="$PROJECT_DIR$/lib/otherDemos.dart" />
         <option value="$PROJECT_DIR$/lib/materialDemos.dart" />
-        <option value="$PROJECT_DIR$/lib/materialSheet.dart" />
         <option value="$PROJECT_DIR$/lib/flutterGalleryDemos.dart" />
+        <option value="$PROJECT_DIR$/lib/main.dart" />
+        <option value="$PROJECT_DIR$/lib/materialSheet.dart" />
+        <option value="$PROJECT_DIR$/lib/otherDemos.dart" />
       </list>
     </option>
   </component>
@@ -679,11 +691,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/otherDemos.dart">
+    <entry file="file://$PROJECT_DIR$/lib/flutterGalleryDemos.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="7" column="25" lean-forward="false" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
-          <folding />
+        <state relative-caret-position="344">
+          <caret line="629" column="25" lean-forward="false" selection-start-line="629" selection-start-column="25" selection-end-line="629" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -697,28 +711,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/materialSheet.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="532" column="0" lean-forward="true" selection-start-line="532" selection-start-column="0" selection-end-line="532" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/main.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="38" />
+        <state relative-caret-position="340">
+          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/flutterGalleryDemos.dart">
+    <entry file="file://$PROJECT_DIR$/lib/materialSheet.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2207">
-          <caret line="473" column="37" lean-forward="true" selection-start-line="473" selection-start-column="37" selection-end-line="473" selection-end-column="37" />
+        <state relative-caret-position="319">
+          <caret line="439" column="22" lean-forward="true" selection-start-line="439" selection-start-column="22" selection-end-line="439" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/otherDemos.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="96" column="22" lean-forward="true" selection-start-line="96" selection-start-column="22" selection-end-line="96" selection-end-column="22" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>

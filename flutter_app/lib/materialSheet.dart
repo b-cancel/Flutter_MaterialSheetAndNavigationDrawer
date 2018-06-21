@@ -77,7 +77,7 @@ class MaterialSheet extends StatelessWidget{
 
   //---------TODO... In Progress
   //if you have too little content you still want your sheet to be a particular size (might have to align)
-  final double sheetMin; //TODO... check if I need alignment var addition
+  final double sheetMin;
   //if you dont want your sheet to be larger than a certain size
   final double sheetMax; //TODO... set inherent limit (max size).... allow overflow to just be scrolled
 
@@ -130,9 +130,8 @@ class MaterialSheet extends StatelessWidget{
               swipeToOpen: swipeToOpen,
               swipeToClose: swipeToClose,
 
-              //TODO... in progress
               sheetMin: sheetMin,
-              sheetMax: sheetMax,
+              sheetMax: sheetMax, //TODO... in progress
             ),
           ],
         ),
@@ -389,13 +388,13 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   }
 
-  Widget attachmentWidget(){
+  Widget attachmentWidget(bool addKey){
     Widget currAttach = attachment;
     if(currAttach == null && swipeToOpen)
       currAttach = new Icon(Icons.attachment, color: Colors.transparent);
 
     return new Container(
-      key: attachKey,
+      key: (addKey) ? attachKey : null,
       child: (currAttach != null) ? currAttach : null,
     );
   }
@@ -435,7 +434,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     bool isWidthMax = (position == sheetPosition.bottom || position == sheetPosition.top);
 
     Widget thisSheetWidget = sheetWidget(sheetWidth, sheetHeight);
-    Widget thisAttachmentWidget = attachmentWidget();
 
     Transform mainWidget = new Transform(
       transform: _calcTransform(isWidthMax, sheetWidth, sheetHeight),
@@ -480,7 +478,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     thisSheetWidget,
-                    thisAttachmentWidget,
+                    attachmentWidget(true),
                   ],
                 ),
               ),
@@ -517,7 +515,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
                 new Expanded(
                   child: new Container(),
                 ),
-                thisAttachmentWidget,
+                attachmentWidget(false),
               ],
             ),
           ),
