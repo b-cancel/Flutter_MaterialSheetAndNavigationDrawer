@@ -87,21 +87,22 @@ class MaterialSheetTestApp extends StatelessWidget {
 
 Remember to comment out every "runApp" in main.dart except the one you want to view
 
-backdrop_demo.dart
+Persistent Bottom Sheet
 <br>
-<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="360"/>
-backdrop_demo.dart
+<img src="https://media.giphy.com/media/dYng1K8blxvnsLhP81/giphy.gif" width="360"/>
+Modal Bottom Sheet
 <br>
-<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="360" height="640" />
-backdrop_demo.dart
+<img src="https://media.giphy.com/media/6tWWL1E0hLxsyB9zZA/giphy.gif" width="360"/>
+List Demo with Persistent Bottom Sheet With Options
 <br>
-<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="75" height="75" />
-backdrop_demo.dart
+<img src="https://media.giphy.com/media/YUkSsmSoLiozjZNEfZ/giphy.gif" width="360"/>
+Navigation Drawer (comming soon)
 <br>
-<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="75" height="75" />
-backdrop_demo.dart
+<img src="https://media.giphy.com/media/6tWWL1E0hLxsyB9zZA/giphy.gif" width="360"/>
+Attachment Inside
 <br>
-<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="75" height="75" />
-backdrop_demo.dart
+<img src="https://media.giphy.com/media/3OsHkvpOWwHMNq4C6X/giphy.gif" width="360"/>
+Attachment Outside
 <br>
-<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="75" height="75" />
+<img src="https://media.giphy.com/media/20OQm9fCzezqHSHpgM/giphy.gif" width="360"/>
+
