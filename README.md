@@ -97,7 +97,7 @@ Remember to comment out every "runApp" in main.dart except the one you want to v
 <br>
 <h5>List Demo with Persistent Bottom Sheet With Options</h5>
 <br>
-<img src="https://media.giphy.com/media/YUkSsmSoLiozjZNEfZ/giphy.gif" width="360"/>
+<img src="https://media.giphy.com/media/4ZxdyKq7xkWN2edOPP/giphy.gif" width="360"/>
 <br>
 <h5>Navigation Drawer (comming soon)</h5>
 <br>
@@ -105,7 +105,7 @@ Remember to comment out every "runApp" in main.dart except the one you want to v
 <br>
 <h5>Attachment Inside</h5>
 <br>
-<img src="https://media.giphy.com/media/3OsHkvpOWwHMNq4C6X/giphy.gif" width="360"/>
+<img src="https://media.giphy.com/media/QmDaRdVzd3hjjeyIwB/giphy.gif" width="360"/>
 <br>
 <h5>Attachment Outside</h5>
 <br>
