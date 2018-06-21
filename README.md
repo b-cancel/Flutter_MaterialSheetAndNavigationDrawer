@@ -51,6 +51,7 @@ FUNCTIONS
 
 <h3>How To Use Me</h3>
 
+```
 import 'package:flutter/material.dart';
 import 'materialSheet.dart';
 
@@ -80,6 +81,7 @@ class MaterialSheetTestApp extends StatelessWidget {
     return matSheet;
   }
 }
+```
 
 <h3>Demonstrations Of My Abilities</h3>
 
