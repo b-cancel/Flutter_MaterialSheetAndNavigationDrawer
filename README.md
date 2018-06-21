@@ -87,22 +87,27 @@ class MaterialSheetTestApp extends StatelessWidget {
 
 Remember to comment out every "runApp" in main.dart except the one you want to view
 
-Persistent Bottom Sheet
+<h5>Persistent Bottom Sheet</h5>
 <br>
 <img src="https://media.giphy.com/media/dYng1K8blxvnsLhP81/giphy.gif" width="360"/>
-Modal Bottom Sheet
+<br>
+<h5>Modal Bottom Sheet</h5>
 <br>
 <img src="https://media.giphy.com/media/6tWWL1E0hLxsyB9zZA/giphy.gif" width="360"/>
-List Demo with Persistent Bottom Sheet With Options
+<br>
+<h5>List Demo with Persistent Bottom Sheet With Options</h5>
 <br>
 <img src="https://media.giphy.com/media/YUkSsmSoLiozjZNEfZ/giphy.gif" width="360"/>
-Navigation Drawer (comming soon)
 <br>
-<img src="https://media.giphy.com/media/6tWWL1E0hLxsyB9zZA/giphy.gif" width="360"/>
-Attachment Inside
+<h5>Navigation Drawer (comming soon)</h5>
+<br>
+<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="360"/>
+<br>
+<h5>Attachment Inside</h5>
 <br>
 <img src="https://media.giphy.com/media/3OsHkvpOWwHMNq4C6X/giphy.gif" width="360"/>
-Attachment Outside
+<br>
+<h5>Attachment Outside</h5>
 <br>
 <img src="https://media.giphy.com/media/20OQm9fCzezqHSHpgM/giphy.gif" width="360"/>
 
