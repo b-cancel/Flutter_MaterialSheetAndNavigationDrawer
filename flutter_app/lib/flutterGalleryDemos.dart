@@ -462,10 +462,10 @@ class _ListDemoState extends State<ListDemo> {
   openAnim() => matSheet.openAnimated();
   closeAnim() => matSheet.closeAnimated();
 
+  bool testBool = true;
+
   @override
   Widget build(BuildContext context){
-    print("after rebuild $_showAvatars");
-
     const scaffColor = Color(0xfffafafa); //manually read in from Theme.of(context).scaffoldBackgroundColor
 
     final String layoutText = _dense ? ' \u2013 Dense' : '';
@@ -486,8 +486,6 @@ class _ListDemoState extends State<ListDemo> {
     Iterable<Widget> listTiles = items.map((String item) => buildListTile(context, item));
     if (_showDividers)
       listTiles = ListTile.divideTiles(context: context, tiles: listTiles);
-
-    print("after after rebuild $_showAvatars");
 
     matSheet = new MaterialSheet(
         app: new MaterialApp(
@@ -536,97 +534,102 @@ class _ListDemoState extends State<ListDemo> {
             shrinkWrap: true,
             primary: false, //NOTE: if this is commented out behavior of scrolling will supercede that of closing the sheet
             children: <Widget>[
-              new ListTile(
+              new MergeSemantics(
+                child: new ListTile(
+                    dense: true,
+                    title: const Text('One-line'),
+                    trailing: new Radio<_MaterialListType>(
+                      value: _showAvatars ? _MaterialListType.oneLineWithAvatar : _MaterialListType.oneLine,
+                      groupValue: _itemType,
+                      onChanged: changeItemType,
+                    )
+                ),
+              ),
+              new MergeSemantics(
+                child: new ListTile(
+                    dense: true,
+                    title: const Text('Two-line'),
+                    trailing: new Radio<_MaterialListType>(
+                      value: _MaterialListType.twoLine,
+                      groupValue: _itemType,
+                      onChanged: changeItemType,
+                    )
+                ),
+              ),
+              new MergeSemantics(
+                child: new ListTile(
                   dense: true,
-                  title: const Text('One-line'),
+                  title: const Text('Three-line'),
                   trailing: new Radio<_MaterialListType>(
-                    value: _showAvatars ? _MaterialListType.oneLineWithAvatar : _MaterialListType.oneLine,
+                    value: _MaterialListType.threeLine,
                     groupValue: _itemType,
                     onChanged: changeItemType,
-                  )
+                  ),
+                ),
               ),
-              new ListTile(
+              new MergeSemantics(
+                child: new ListTile(
                   dense: true,
-                  title: const Text('Two-line'),
-                  trailing: new Radio<_MaterialListType>(
-                    value: _MaterialListType.twoLine,
-                    groupValue: _itemType,
-                    onChanged: changeItemType,
-                  )
-              ),
-              new ListTile(
-                dense: true,
-                title: const Text('Three-line'),
-                trailing: new Radio<_MaterialListType>(
-                  value: _MaterialListType.threeLine,
-                  groupValue: _itemType,
-                  onChanged: changeItemType,
+                  title: const Text('Show avatar'),
+                  trailing: new Checkbox(
+                    value: _showAvatars,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _showAvatars = value;
+                      });
+                    },
+                  ),
                 ),
               ),
-              new ListTile(
-                dense: true,
-                title: const Text('Show avatar'),
-                trailing: new Checkbox(
-                  value: _showAvatars,
-                  onChanged: (bool value) {
-
-                    setState(() {
-                      print("VALUE $value");
-                      print("setting state from $_showAvatars");
-                      //_showAvatars = value;
-                      _showAvatars = !_showAvatars;
-                      value = _showAvatars;
-                      print("setting state to $_showAvatars");
-                    });
-                    /*
-                    _bottomSheet?.setState(() { });
-                    */
-                  },
+              new MergeSemantics(
+                child: new ListTile(
+                  dense: true,
+                  title: const Text('Show icon'),
+                  trailing: new Checkbox(
+                    value: _showIcons,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _showIcons = value;
+                      });
+                    },
+                  ),
                 ),
               ),
-              new ListTile(
-                dense: true,
-                title: const Text('Show icon'),
-                trailing: new Checkbox(
-                  value: _showIcons,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _showIcons = value;
-                    });
-                  },
+              new MergeSemantics(
+                child: new ListTile(
+                  dense: true,
+                  title: const Text('Show dividers'),
+                  trailing: new Checkbox(
+                    value: _showDividers,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _showDividers = value;
+                      });
+                    },
+                  ),
                 ),
               ),
-              new ListTile(
-                dense: true,
-                title: const Text('Show dividers'),
-                trailing: new Checkbox(
-                  value: _showDividers,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _showDividers = value;
-                    });
-                  },
-                ),
-              ),
-              new ListTile(
-                dense: true,
-                title: const Text('Dense layout'),
-                trailing: new Checkbox(
-                  value: _dense,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _dense = value;
-                    });
-                  },
+              new MergeSemantics(
+                child: new ListTile(
+                  dense: true,
+                  title: const Text('Dense layout'),
+                  trailing: new Checkbox(
+                    value: _dense,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _dense = value;
+                      });
+                    },
+                  ),
                 ),
               ),
             ],
           ),
         ),
       type: sheetType.persistent,
+      swipeToOpen: false,
+      startOpen: true,
     );
-
-    print("after after after rebuild $_showAvatars");
 
     return  new Material(child: matSheet);
   }

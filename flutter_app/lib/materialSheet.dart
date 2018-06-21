@@ -217,7 +217,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   static double sheetMin;
   static double sheetMax;
 
-  void _tieVarsOnInit() {
+  void _tieVarsBeforeBuildRun() {
     closeSheetFunc = widget.closeSheetFunc;
 
     sheet = widget.sheet;
@@ -265,7 +265,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   @override
   void initState() {
-    _tieVarsOnInit();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -438,8 +437,6 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     Widget thisSheetWidget = sheetWidget(sheetWidth, sheetHeight);
     Widget thisAttachmentWidget = attachmentWidget();
 
-    print("-----slkdjf-----");
-
     Transform mainWidget = new Transform(
       transform: _calcTransform(isWidthMax, sheetWidth, sheetHeight),
       child: new Flex(
@@ -534,7 +531,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   @override
   Widget build(BuildContext context) {
 
-    print("-----upate state-----");
+    //used to make our variables more easily addressable
+    _tieVarsBeforeBuildRun();
 
     //---Required to read in sheetWidth and sheetHeight
     timesBuilt++;
