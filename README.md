@@ -49,6 +49,10 @@ FUNCTIONS
 5. closeInstant() -> close the sheet instantly
 6. closeAnim() -> close the sheet with an animation
 
+<h3>My Limitations</h3>
+I was not Created To Have The Best Performance.
+Given the large quantity of options it might be best to modify the code to only include the options you need.
+
 <h3>How To Use Me</h3>
 
 ```
