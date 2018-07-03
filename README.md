@@ -97,11 +97,11 @@ Remember to comment out every "runApp" in main.dart except the one you want to v
 <br>
 <h5>Modal Bottom Sheet</h5>
 <br>
-<img src="https://media.giphy.com/media/6tWWL1E0hLxsyB9zZA/giphy.gif" width="360"/>
+<img src="https://media.giphy.com/media/dkXLQACALhF6puhk3I/giphy.gif" width="360"/>
 <br>
 <h5>List Demo with Persistent Bottom Sheet With Options</h5>
 <br>
-<img src="https://media.giphy.com/media/4ZxdyKq7xkWN2edOPP/giphy.gif" width="360"/>
+<img src="https://media.giphy.com/media/3fih4lYknMevFgu4O2/giphy.gif" width="360"/>
 <br>
 <h5>Navigation Drawer (comming soon)</h5>
 <br>
