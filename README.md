@@ -1,6 +1,6 @@
 # Flutter_MaterialSheetAndNavigationDrawer
 
-<h3>What Am I<h3>
+<h3>What Am I</h3>
 
 A Very Flexible Widget that can Implement...
 1. Material Sheets (bottom, top, side) (modal and persistent) 
@@ -49,8 +49,13 @@ FUNCTIONS
 5. closeInstant() -> close the sheet instantly
 6. closeAnim() -> close the sheet with an animation
 
+<h3>My Limitations</h3>
+I was not Created To Have The Best Performance.
+Given the large quantity of options it might be best to modify the code to only include the options you need.
+
 <h3>How To Use Me</h3>
 
+```
 import 'package:flutter/material.dart';
 import 'materialSheet.dart';
 
@@ -80,9 +85,33 @@ class MaterialSheetTestApp extends StatelessWidget {
     return matSheet;
   }
 }
+```
 
 <h3>Demonstrations Of My Abilities</h3>
 
 Remember to comment out every "runApp" in main.dart except the one you want to view
 
+<h5>Persistent Bottom Sheet</h5>
+<br>
+<img src="https://media.giphy.com/media/dYng1K8blxvnsLhP81/giphy.gif" width="360"/>
+<br>
+<h5>Modal Bottom Sheet</h5>
+<br>
+<img src="https://media.giphy.com/media/dkXLQACALhF6puhk3I/giphy.gif" width="360"/>
+<br>
+<h5>List Demo with Persistent Bottom Sheet With Options</h5>
+<br>
+<img src="https://media.giphy.com/media/3fih4lYknMevFgu4O2/giphy.gif" width="360"/>
+<br>
+<h5>Navigation Drawer (comming soon)</h5>
+<br>
+<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="360"/>
+<br>
+<h5>Attachment Inside</h5>
+<br>
+<img src="https://media.giphy.com/media/QmDaRdVzd3hjjeyIwB/giphy.gif" width="360"/>
+<br>
+<h5>Attachment Outside</h5>
+<br>
+<img src="https://media.giphy.com/media/20OQm9fCzezqHSHpgM/giphy.gif" width="360"/>
 
