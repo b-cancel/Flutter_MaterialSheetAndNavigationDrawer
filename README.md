@@ -95,9 +95,9 @@ class MaterialSheetTestApp extends StatelessWidget {
 1. getOpenPercent Function
 2. getAttachmentSize, getSheetSize Functions
 3. multiple sheets on screen (currently a strange bug is stopping this)
-- animationSpeedInMilliseconds is the ammount of time a sheet takes to full open, not just to complete opening [immutable]
-- lockSheet (opened, closed, false) [mutable]
-- sheetAffectsApp (resize, move, none) [mutable]
+4. animationSpeedInMilliseconds is the ammount of time a sheet takes to full open, not just to complete opening [immutable]
+5. lockSheet (opened, closed, false) [mutable]
+6. sheetAffectsApp (resize, move, none) [mutable]
 
 <h3>Demonstrations Of My Abilities</h3>
 
