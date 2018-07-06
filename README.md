@@ -39,12 +39,6 @@ VARIABLE PARAMETERS
 13. sheetMin -> the smallest the sheet can be
 14. sheetMax -> the largest the sheet can be
 
-OTHER VARIABLES (easily edited by modifying materialSheet.dart file)
-1. scrim color
-2. autoOpenOrCloseIndicatorColor
-3. Auto Animation Speed
-4. and more!
-
 FUNCTIONS
 1. toggleInstant() -> toggle between opened and closed states with no animation
 2. toggleAnim() -> toggle between opened and closed states with animation 
