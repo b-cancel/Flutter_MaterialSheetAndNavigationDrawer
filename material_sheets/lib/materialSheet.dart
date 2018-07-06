@@ -24,9 +24,10 @@ class GlobalFunctions{
 
   Function getSlideUpdateStream;
   Function setSlideUpdateStream;
-}
 
-double openPercent; //DO NOT SET THIS VARIABLE MANUALLY
+  Function getOpenPercent;
+  Function setOpenPercent;
+}
 
 //-------------------------Material Sheet-------------------------
 
@@ -108,12 +109,12 @@ class MaterialSheet extends StatelessWidget{
   //-------------------------Helper Functions
 
   toggleInstantaneous(){
-    if(openPercent == 1.0 || openPercent == 0.0)
-      (openPercent == 1.0) ? closeInstantaneous() : openInstantaneous();
+    if(globals.getOpenPercent() == 1.0 || globals.getOpenPercent() == 0.0)
+      (globals.getOpenPercent() == 1.0) ? closeInstantaneous() : openInstantaneous();
   }
   toggleAnimated(){
-    if(openPercent == 1.0 || openPercent == 0.0)
-      (openPercent == 1.0) ? closeAnimated() : openAnimated();
+    if(globals.getOpenPercent() == 1.0 || globals.getOpenPercent() == 0.0)
+      (globals.getOpenPercent() == 1.0) ? closeAnimated() : openAnimated();
   }
 
   //-----Instantaneous
@@ -128,10 +129,6 @@ class MaterialSheet extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-
-    if(openPercent == null)
-      openPercent = (startOpen) ? 1.0 : 0.0;
-
     return new MediaQuery(
       data: MediaQueryData(),
       child: new Directionality(
@@ -140,6 +137,7 @@ class MaterialSheet extends StatelessWidget{
           children: <Widget>[
             app,
             new SheetWidget(
+              startOpen: startOpen,
               globals: globals,
 
               closeSheetFunc: closeAnimated,
@@ -180,6 +178,8 @@ class SheetWidget extends StatefulWidget {
   const SheetWidget({
     Key key,
 
+    @required this.startOpen,
+
     @required this.globals,
 
     @required this.closeSheetFunc,
@@ -204,6 +204,8 @@ class SheetWidget extends StatefulWidget {
     @required this.sheetMin,
     @required this.sheetMax,
   }) : super(key: key);
+
+  final bool startOpen;
 
   final GlobalFunctions globals;
 
@@ -237,6 +239,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Parameters
 
+  static bool startOpen;
+
   static GlobalFunctions globals;
 
   static Function closeSheetFunc;
@@ -262,6 +266,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   static double sheetMax;
 
   void _tieVarsBeforeBuildRun() {
+    startOpen = widget.startOpen;
+
     globals = widget.globals;
 
     closeSheetFunc = widget.closeSheetFunc;
@@ -301,18 +307,26 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     setState(() {});
   }
 
-  //-------------------------Slide Update Stream GLOBAL (removes the need for a global variable)
+  //-------------------------Slide Update Stream GLOBAL -AND- Open Percent Global (removes the need for a global variable)
 
   var slideUpdateStream;
 
   StreamController<double> getSlideUpdateStream() => slideUpdateStream;
   setSlideUpdateStream(StreamController<double> newSUS) => slideUpdateStream = newSUS;
 
+  var openPercent;
+
+  double getOpenPercent() => openPercent;
+  setOpenPercent(double newOP) => openPercent = newOP;
+
   _linkLocalToGlobalFunctions(){
     var w = widget.globals;
 
     w.setSlideUpdateStream = setSlideUpdateStream;
     w.getSlideUpdateStream = getSlideUpdateStream;
+
+    w.setOpenPercent = setOpenPercent;
+    w.getOpenPercent = getOpenPercent;
   }
 
   asyncInit() async{
@@ -327,7 +341,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
     _slideUpdateStream.stream.listen((double newPercent){
       setState(() {
-        openPercent = newPercent;
+        globals.setOpenPercent(newPercent);
       });
     });
 
@@ -354,7 +368,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   @override
   didPopRoute(){
-    bool override = backBtnClosesSheet && (openPercent ==  1.0);
+    bool override = backBtnClosesSheet && (globals.getOpenPercent() ==  1.0);
     if(override)
       closeSheetFunc();
     return new Future<bool>.value(override);
@@ -431,12 +445,12 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   Matrix4 _calcTransform(bool isWidthMax, double width, double height){
     Matrix4 beginMatrix = Matrix4.translationValues(0.0,0.0,0.0);
     Matrix4 endMatrix = _calcSheetClosedTransform(isWidthMax, width, height);
-    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(openPercent);
+    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(globals.getOpenPercent());
   }
 
   Color _calcIndicatorColor(){
     if(autoOpenOrCloseIndicator){
-      if(openPercent > .5) return indicatorAutoCloseColor.withOpacity(0.0);
+      if(globals.getOpenPercent() > .5) return indicatorAutoCloseColor.withOpacity(0.0);
       else return indicatorAutoCloseColor;
     }
     else return Colors.transparent;
@@ -477,9 +491,9 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   Widget scrimWidget(){
     if(type == sheetType.modal){
-      if(openPercent != 0.0){
+      if(globals.getOpenPercent() != 0.0){
         return new Container(
-          color: Color.lerp(Colors.transparent, scrimOpenColor, openPercent),
+          color: Color.lerp(Colors.transparent, scrimOpenColor, globals.getOpenPercent()),
           child: new GestureDetector(
             onTap: closeSheetFunc,
           ),
@@ -612,6 +626,9 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     //used to make our variables more easily addressable
     _tieVarsBeforeBuildRun();
 
+    if(globals.getOpenPercent() == null)
+      globals.setOpenPercent((startOpen) ? 1.0 : 0.0);
+
     //---Required to read in sheetWidth and sheetHeight
     timesBuilt++;
     if(timesBuilt < requiredBuildsPerChange) rebuildAsync();
@@ -673,7 +690,7 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
   double slideStart;
 
   onDragStart(DragStartDetails details){
-    slideStart = openPercent;
+    slideStart = widget.globals.getOpenPercent();
     dragStart = details.globalPosition;
 
     //NOTE: because our animation will complete any drag...
@@ -706,7 +723,7 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
 
   onDragEnd(DragEndDetails details){
     dragStart = null;
-    completeOpenOrClose((openPercent > 0.5) ? 1.0 : 0.0, widget.animationSpeedInMilliseconds, widget.globals);
+    completeOpenOrClose((widget.globals.getOpenPercent() > 0.5) ? 1.0 : 0.0, widget.animationSpeedInMilliseconds, widget.globals);
   }
 
   //-------------------------Animation Ticker GLOBAL -AND- Animation Open Or Close GLOBAL (removes the need for a global variable)
@@ -759,7 +776,7 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
 completeOpenOrClose(double goalOpenPercent, int millisecondsToComplete, GlobalFunctions globals){
   if(globals.getAnimationOpenOrClose() == null){
     var newOOCA = new OpenOrCloseAnimation(
-      startOpenPercent: openPercent,
+      startOpenPercent: globals.getOpenPercent(),
       goalOpenPercent: goalOpenPercent,
       millisecondsToComplete: millisecondsToComplete,
 
@@ -770,7 +787,7 @@ completeOpenOrClose(double goalOpenPercent, int millisecondsToComplete, GlobalFu
     globals.setAnimationOpenOrClose(newOOCA);
   }
   else{
-    globals.getAnimationOpenOrClose().startOpenPercent = openPercent;
+    globals.getAnimationOpenOrClose().startOpenPercent = globals.getOpenPercent();
     globals.getAnimationOpenOrClose().goalOpenPercent = goalOpenPercent;
     globals.getAnimationOpenOrClose().millisecondsToComplete = millisecondsToComplete;
     globals.getAnimationOpenOrClose().completionAnimationController.duration = new Duration(milliseconds: millisecondsToComplete);
