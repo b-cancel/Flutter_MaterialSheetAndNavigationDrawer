@@ -103,3 +103,177 @@ class MaterialSheetTestApp extends StatelessWidget {
     return matSheet;
   }
 }
+
+class MultiSheets extends StatelessWidget {
+  //-------------------------Helper Functions
+  //NOTE: these are required if you want buttons that will be opening or closing the sheet
+
+  MaterialSheet rightSheet;
+  toggleInstantR() => rightSheet.toggleInstantaneous();
+  toggleAnimR() => rightSheet.toggleAnimated();
+  openInstantR() => rightSheet.openInstantaneous();
+  closeInstantR() => rightSheet.closeInstantaneous();
+  openAnimR() => rightSheet.openAnimated();
+  closeAnimR() => rightSheet.closeAnimated();
+
+  MaterialSheet leftSheet;
+  toggleInstantL() => leftSheet.toggleInstantaneous();
+  toggleAnimL() => leftSheet.toggleAnimated();
+  openInstantL() => leftSheet.openInstantaneous();
+  closeInstantL() => leftSheet.closeInstantaneous();
+  openAnimL() => leftSheet.openAnimated();
+  closeAnimL() => leftSheet.closeAnimated();
+
+  MaterialSheet bottomSheet;
+  toggleInstantB() => bottomSheet.toggleInstantaneous();
+  toggleAnimB() => bottomSheet.toggleAnimated();
+  openInstantB() => bottomSheet.openInstantaneous();
+  closeInstantB() => bottomSheet.closeInstantaneous();
+  openAnimB() => bottomSheet.openAnimated();
+  closeAnimB() => bottomSheet.closeAnimated();
+
+  MaterialSheet topSheet;
+  toggleInstantT() => topSheet.toggleInstantaneous();
+  toggleAnimT() => topSheet.toggleAnimated();
+  openInstantT() => topSheet.openInstantaneous();
+  closeInstantT() => topSheet.closeInstantaneous();
+  openAnimT() => topSheet.openAnimated();
+  closeAnimT() => topSheet.closeAnimated();
+
+  //-------------------------Build Function
+
+  @override
+  Widget build(BuildContext context) {
+    rightSheet = new MaterialSheet(
+      //-----Widgets
+      app: new Container(),
+      sheet: new Container(
+        color: Colors.yellowAccent,
+        child: new Center(
+          child: new Text(
+            "Right Sheet",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+      ),
+      attachment: new Container(
+        color: Colors.greenAccent,
+        child: new Icon(
+          Icons.attachment,
+          color: Colors.white,
+        ),
+      ),
+      //-----Other Vars
+      position: sheetPosition.right,
+      autoOpenOrCloseIndicator: true,
+      placement: attachmentPlacement.inside,
+    );
+
+    leftSheet = new MaterialSheet(
+      //-----Widgets
+      app: Container(),
+      sheet: new Container(
+        color: Colors.yellowAccent,
+        child: new Center(
+          child: new Text(
+            "Left Sheet",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+      ),
+      attachment: new Container(
+        color: Colors.pinkAccent,
+        child: new Icon(
+          Icons.attachment,
+          color: Colors.white,
+        ),
+      ),
+      //-----Other Vars
+      position: sheetPosition.left,
+      autoOpenOrCloseIndicator: true,
+      placement: attachmentPlacement.inside,
+    );
+
+    topSheet = new MaterialSheet(
+      //-----Widgets
+      app: Container(),
+      sheet: new Container(
+        color: Colors.purple,
+        child: new Center(
+          child: new Text(
+            "Top Sheet",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+      ),
+      attachment: new Container(
+        color: Colors.pinkAccent,
+        child: new Icon(
+          Icons.attachment,
+          color: Colors.white,
+        ),
+      ),
+      //-----Other Vars
+      position: sheetPosition.top,
+      autoOpenOrCloseIndicator: true,
+      placement: attachmentPlacement.inside,
+    );
+
+    bottomSheet = new MaterialSheet(
+      //-----Widgets
+      app: Container(),
+      sheet: new Container(
+        color: Colors.yellowAccent,
+        child: new Center(
+          child: new Text(
+            "Bottom Sheet",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+      ),
+      attachment: new Container(
+        color: Colors.redAccent,
+        child: new Icon(
+          Icons.attachment,
+          color: Colors.white,
+        ),
+      ),
+      //-----Other Vars
+      position: sheetPosition.bottom,
+      autoOpenOrCloseIndicator: true,
+      placement: attachmentPlacement.inside,
+    );
+
+    return new Stack(
+      children: <Widget>[
+        new Container(
+          color: Colors.blue,
+          child: new Center(
+            child: new Text(
+              "MAIN",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        rightSheet,
+        //leftSheet,
+        //bottomSheet,
+        //topSheet,
+      ],
+    );
+  }
+}

@@ -47,6 +47,7 @@ class MaterialSheet extends StatelessWidget{
         this.type: sheetType.modal,
         this.placement: attachmentPlacement.inside,
         this.backBtnClosesSheet: true,
+        this.backBtnClosesAnimated: true,
         this.autoOpenOrCloseIndicator: false,
 
         this.swipeToOpen: true,
@@ -79,6 +80,8 @@ class MaterialSheet extends StatelessWidget{
   final attachmentPlacement placement;
   //whether or not the backButton closes the Sheet (ONLY android)
   final bool backBtnClosesSheet;
+  //how the sheet closes when you press the backButton
+  final bool backBtnClosesAnimated;
   //if you drag the sheet but not all the way after 50% on either side it will open or close automatically
   //this will show an indicator when the action that will be taken is obvious
   //darker overlay means it will close, no overlay means it will open
@@ -140,7 +143,7 @@ class MaterialSheet extends StatelessWidget{
               startOpen: startOpen,
               globals: globals,
 
-              closeSheetFunc: closeAnimated,
+              closeSheetFunc: (backBtnClosesAnimated) ? closeAnimated : closeInstantaneous,
 
               sheet: sheet,
               attachment: attachment,
@@ -307,45 +310,61 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     setState(() {});
   }
 
-  //-------------------------Slide Update Stream GLOBAL -AND- Open Percent Global (removes the need for a global variable)
+  //-------------------------GLOBAL VAR REPLACEMENTS
 
+  TickerProvider animationTicker;
+  OpenOrCloseAnimation animationOpenOrClose;
   var slideUpdateStream;
+  var openPercent;
+
+  TickerProvider  getAnimationTicker() => animationTicker;
+  setAnimationTicker(TickerProvider newAT) => animationTicker = newAT;
+
+  OpenOrCloseAnimation getAnimationOpenOrClose() => animationOpenOrClose;
+  setAnimationOpenOrClose(OpenOrCloseAnimation newOOCA) => animationOpenOrClose = newOOCA;
 
   StreamController<double> getSlideUpdateStream() => slideUpdateStream;
   setSlideUpdateStream(StreamController<double> newSUS) => slideUpdateStream = newSUS;
 
-  var openPercent;
-
   double getOpenPercent() => openPercent;
   setOpenPercent(double newOP) => openPercent = newOP;
 
-  _linkLocalToGlobalFunctions(){
+  linkLocalToGlobalFunctions(){
+
+    //print("link");
+
     var w = widget.globals;
+
+    w.setOpenPercent = setOpenPercent;
+    w.getOpenPercent = getOpenPercent;
 
     w.setSlideUpdateStream = setSlideUpdateStream;
     w.getSlideUpdateStream = getSlideUpdateStream;
 
-    w.setOpenPercent = setOpenPercent;
-    w.getOpenPercent = getOpenPercent;
+    w.setAnimationTicker = setAnimationTicker;
+    w.getAnimationTicker = getAnimationTicker;
+
+    w.setAnimationOpenOrClose = setAnimationOpenOrClose;
+    w.getAnimationOpenOrClose = getAnimationOpenOrClose;
   }
 
-  asyncInit() async{
-    await _linkLocalToGlobalFunctions();
+  asyncLink() async{
+    await linkLocalToGlobalFunctions();
     _initGlobalVar();
   }
 
   //-------------------------Required For Gestures and Animations
 
   _initGlobalVar() {
-    var _slideUpdateStream = new StreamController<double>();
+    if(globals.getSlideUpdateStream() == null){
+      globals.setSlideUpdateStream(new StreamController<double>());
 
-    _slideUpdateStream.stream.listen((double newPercent){
-      setState(() {
-        globals.setOpenPercent(newPercent);
+      globals.getSlideUpdateStream().stream.listen((double newPercent){
+        setState(() {
+          globals.setOpenPercent(newPercent);
+        });
       });
-    });
-
-    globals.setSlideUpdateStream(_slideUpdateStream);
+    }
   }
 
   //-------------------------Required For WidgetsBindingObserver
@@ -355,7 +374,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    asyncInit();
+    asyncLink();
   }
 
   @override
@@ -551,6 +570,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
               key: wholeKey,
               color: Colors.transparent,
               child: new SwipeToOpenClose(
+                linkFunction: asyncLink,
                 globals: globals,
                 isWidthMax: isWidthMax,
                 position: position,
@@ -621,7 +641,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   @override
   Widget build(BuildContext context) {
 
-    _linkLocalToGlobalFunctions();
+    linkLocalToGlobalFunctions();
 
     //used to make our variables more easily addressable
     _tieVarsBeforeBuildRun();
@@ -649,6 +669,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 class SwipeToOpenClose extends StatefulWidget {
 
   SwipeToOpenClose({
+    @required this.linkFunction,
+
     @required this.globals,
 
     @required this.isWidthMax,
@@ -663,6 +685,8 @@ class SwipeToOpenClose extends StatefulWidget {
 
     @required this.child,
   });
+
+  final Function linkFunction;
 
   final GlobalFunctions globals;
 
@@ -702,6 +726,9 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
   }
 
   onDragUpdate(DragUpdateDetails details){
+
+    widget.linkFunction();
+
     if(dragStart != null){
       final dragCurrent = details.globalPosition;
       var dragChange;
@@ -726,33 +753,12 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
     completeOpenOrClose((widget.globals.getOpenPercent() > 0.5) ? 1.0 : 0.0, widget.animationSpeedInMilliseconds, widget.globals);
   }
 
-  //-------------------------Animation Ticker GLOBAL -AND- Animation Open Or Close GLOBAL (removes the need for a global variable)
-
-  TickerProvider animationTicker;
-  OpenOrCloseAnimation animationOpenOrClose;
-
-  _linkLocalToGlobalFunctions(){
-    var w = widget.globals;
-
-    w.setAnimationTicker = setAnimationTicker;
-    w.getAnimationTicker = getAnimationTicker;
-
-    w.setAnimationOpenOrClose = setAnimationOpenOrClose;
-    w.getAnimationOpenOrClose = getAnimationOpenOrClose;
-  }
-
-  TickerProvider  getAnimationTicker() => animationTicker;
-  setAnimationTicker(TickerProvider newAT) => animationTicker = newAT;
-
-  OpenOrCloseAnimation getAnimationOpenOrClose() => animationOpenOrClose;
-  setAnimationOpenOrClose(OpenOrCloseAnimation newOOCA) => animationOpenOrClose = newOOCA;
-
   //-------------------------System Functions
 
   @override
   Widget build(BuildContext context) {
 
-    _linkLocalToGlobalFunctions();
+    widget.linkFunction();
 
     widget.globals.setAnimationTicker(this);
 
