@@ -29,17 +29,15 @@ VARIABLE PARAMETERS
 3. type -> what type of sheet this is (modal, persistent)
 4. placement -> where the attachment is placed relative to the screen edges (inside, outside)
 5. backBtnClosesSheet -> whether or not the back button closes the sheet
-6. autoOpenOrCloseIndicator -> whether or not you should be shown whether you sheet will autoClose or autoOpen after you let go of it
-7. swipeToOpen -> whether or not you can swipe the sheet to open (NOTE: if no attachment is specified you will swipe the edge of the screen to open)
-8. swipeToClose -> whether or not you can swipe the sheet to close
-9. sheetMin -> the smallest the sheet can be
-10. sheetMax -> the largest the sheet can be
-
-OTHER VARIABLES (easily edited by modifying materialSheet.dart file)
-1. scrim color
-2. autoOpenOrCloseIndicatorColor
-3. Auto Animation Speed
-4. and more!
+6. backBtnClosesAnimated -> whether the back button closes the sheet animated or instantaneously
+7. autoOpenOrCloseIndicator -> whether or not you should be shown whether you sheet will autoClose or autoOpen after you let go of it
+8. swipeToOpen -> whether or not you can swipe the sheet to open (NOTE: if no attachment is specified you will swipe the edge of the screen to open)
+9. swipeToClose -> whether or not you can swipe the sheet to close
+10. animationSpeedInMilliseconds -> how long the sheet takes to open or close if animated
+11. indicatorAutoCloseColor -> the color that shows up when the sheet will auto close if let go [opacity matter]
+12. scrimOpenColor -> the color of the scrim when using a modal sheet [opacity matters]
+13. sheetMin -> the smallest the sheet can be
+14. sheetMax -> the largest the sheet can be
 
 FUNCTIONS
 1. toggleInstant() -> toggle between opened and closed states with no animation
@@ -86,6 +84,15 @@ class MaterialSheetTestApp extends StatelessWidget {
   }
 }
 ```
+
+<h3>Future Plans</h3>
+
+1. getOpenPercent Function
+2. getAttachmentSize, getSheetSize Functions
+3. multiple sheets on screen (currently a strange bug is stopping this)
+4. animationSpeedInMilliseconds is the ammount of time a sheet takes to full open, not just to complete opening [immutable]
+5. lockSheet (opened, closed, false) [mutable]
+6. sheetAffectsApp (resize, move, none) [mutable]
 
 <h3>Demonstrations Of My Abilities</h3>
 
