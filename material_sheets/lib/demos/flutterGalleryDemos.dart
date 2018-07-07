@@ -15,12 +15,12 @@ class _PersistentBottomSheetState extends State<PersistentBottomSheet> {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   Sheet matSheet;
-  toggleInstant() => matSheet.toggleInstantaneous();
-  toggleAnim() => matSheet.toggleAnimated();
-  openInstant() => matSheet.openInstantaneous();
-  closeInstant() => matSheet.closeInstantaneous();
-  openAnim() => matSheet.openAnimated();
-  closeAnim() => matSheet.closeAnimated();
+  toggleInstant() => matSheet.functions.toggleInstantaneous();
+  toggleAnim() => matSheet.functions.toggleAnimated();
+  openInstant() => matSheet.functions.openInstantaneous();
+  closeInstant() => matSheet.functions.closeInstantaneous();
+  openAnim() => matSheet.functions.openAnimated();
+  closeAnim() => matSheet.functions.closeAnimated();
 
   IconData _backIcon() {
     switch (Theme.of(context).platform) {
@@ -57,7 +57,7 @@ class _PersistentBottomSheetState extends State<PersistentBottomSheet> {
     final ThemeData themeData = Theme.of(context);
 
     matSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         app: new MaterialApp(
           home: new Scaffold(
             appBar: new AppBar(
@@ -126,12 +126,12 @@ class ModalBottomSheet extends StatelessWidget {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   Sheet matSheet;
-  toggleInstant() => matSheet.toggleInstantaneous();
-  toggleAnim() => matSheet.toggleAnimated();
-  openInstant() => matSheet.openInstantaneous();
-  closeInstant() => matSheet.closeInstantaneous();
-  openAnim() => matSheet.openAnimated();
-  closeAnim() => matSheet.closeAnimated();
+  toggleInstant() => matSheet.functions.toggleInstantaneous();
+  toggleAnim() => matSheet.functions.toggleAnimated();
+  openInstant() => matSheet.functions.openInstantaneous();
+  closeInstant() => matSheet.functions.closeInstantaneous();
+  openAnim() => matSheet.functions.openAnimated();
+  closeAnim() => matSheet.functions.closeAnimated();
 
   IconData _backIcon(BuildContext context) {
     switch (Theme.of(context).platform) {
@@ -149,7 +149,7 @@ class ModalBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
 
     matSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         app: new MaterialApp(
           home: new Scaffold(
             appBar: new AppBar(
@@ -213,12 +213,12 @@ class _NavigationDrawerState extends State<NavigationDrawer>{
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   Sheet matSheet;
-  toggleInstant() => matSheet.toggleInstantaneous();
-  toggleAnim() => matSheet.toggleAnimated();
-  openInstant() => matSheet.openInstantaneous();
-  closeInstant() => matSheet.closeInstantaneous();
-  openAnim() => matSheet.openAnimated();
-  closeAnim() => matSheet.closeAnimated();
+  toggleInstant() => matSheet.functions.toggleInstantaneous();
+  toggleAnim() => matSheet.functions.toggleAnimated();
+  openInstant() => matSheet.functions.openInstantaneous();
+  closeInstant() => matSheet.functions.closeInstantaneous();
+  openAnim() => matSheet.functions.openAnimated();
+  closeAnim() => matSheet.functions.closeAnimated();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -266,7 +266,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>{
   Widget build(BuildContext context) {
 
     matSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         app: new MaterialApp(
           home: new Scaffold(
             key: _scaffoldKey,
@@ -463,12 +463,12 @@ class _ListDemoState extends State<ListDemo> {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   Sheet matSheet;
-  toggleInstant() => matSheet.toggleInstantaneous();
-  toggleAnim() => matSheet.toggleAnimated();
-  openInstant() => matSheet.openInstantaneous();
-  closeInstant() => matSheet.closeInstantaneous();
-  openAnim() => matSheet.openAnimated();
-  closeAnim() => matSheet.closeAnimated();
+  toggleInstant() => matSheet.functions.toggleInstantaneous();
+  toggleAnim() => matSheet.functions.toggleAnimated();
+  openInstant() => matSheet.functions.openInstantaneous();
+  closeInstant() => matSheet.functions.closeInstantaneous();
+  openAnim() => matSheet.functions.openAnimated();
+  closeAnim() => matSheet.functions.closeAnimated();
 
   bool testBool = true;
 
@@ -496,7 +496,7 @@ class _ListDemoState extends State<ListDemo> {
       listTiles = ListTile.divideTiles(context: context, tiles: listTiles);
 
     matSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         app: new MaterialApp(
           home: new Scaffold(
             key: scaffoldKey,

@@ -6,19 +6,19 @@ class MaterialSheetTestApp extends StatelessWidget {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   Sheet matSheet;
-  toggleInstant() => matSheet.toggleInstantaneous();
-  toggleAnim() => matSheet.toggleAnimated();
-  openInstant() => matSheet.openInstantaneous();
-  closeInstant() => matSheet.closeInstantaneous();
-  openAnim() => matSheet.openAnimated();
-  closeAnim() => matSheet.closeAnimated();
+  toggleInstant() => matSheet.functions.toggleInstantaneous();
+  toggleAnim() => matSheet.functions.toggleAnimated();
+  openInstant() => matSheet.functions.openInstantaneous();
+  closeInstant() => matSheet.functions.closeInstantaneous();
+  openAnim() => matSheet.functions.openAnimated();
+  closeAnim() => matSheet.functions.closeAnimated();
 
   //-------------------------Build Function
 
   @override
   Widget build(BuildContext context) {
     matSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         //-----Widgets
         app: new Container(
           color: Colors.black,
@@ -111,43 +111,43 @@ class MultiSheets extends StatelessWidget {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   Sheet rightSheet;
-  toggleInstantR() => rightSheet.toggleInstantaneous();
-  toggleAnimR() => rightSheet.toggleAnimated();
-  openInstantR() => rightSheet.openInstantaneous();
-  closeInstantR() => rightSheet.closeInstantaneous();
-  openAnimR() => rightSheet.openAnimated();
-  closeAnimR() => rightSheet.closeAnimated();
+  toggleInstantR() => rightSheet.functions.toggleInstantaneous();
+  toggleAnimR() => rightSheet.functions.toggleAnimated();
+  openInstantR() => rightSheet.functions.openInstantaneous();
+  closeInstantR() => rightSheet.functions.closeInstantaneous();
+  openAnimR() => rightSheet.functions.openAnimated();
+  closeAnimR() => rightSheet.functions.closeAnimated();
 
   Sheet leftSheet;
-  toggleInstantL() => leftSheet.toggleInstantaneous();
-  toggleAnimL() => leftSheet.toggleAnimated();
-  openInstantL() => leftSheet.openInstantaneous();
-  closeInstantL() => leftSheet.closeInstantaneous();
-  openAnimL() => leftSheet.openAnimated();
-  closeAnimL() => leftSheet.closeAnimated();
+  toggleInstantL() => leftSheet.functions.toggleInstantaneous();
+  toggleAnimL() => leftSheet.functions.toggleAnimated();
+  openInstantL() => leftSheet.functions.openInstantaneous();
+  closeInstantL() => leftSheet.functions.closeInstantaneous();
+  openAnimL() => leftSheet.functions.openAnimated();
+  closeAnimL() => leftSheet.functions.closeAnimated();
 
   Sheet bottomSheet;
-  toggleInstantB() => bottomSheet.toggleInstantaneous();
-  toggleAnimB() => bottomSheet.toggleAnimated();
-  openInstantB() => bottomSheet.openInstantaneous();
-  closeInstantB() => bottomSheet.closeInstantaneous();
-  openAnimB() => bottomSheet.openAnimated();
-  closeAnimB() => bottomSheet.closeAnimated();
+  toggleInstantB() => bottomSheet.functions.toggleInstantaneous();
+  toggleAnimB() => bottomSheet.functions.toggleAnimated();
+  openInstantB() => bottomSheet.functions.openInstantaneous();
+  closeInstantB() => bottomSheet.functions.closeInstantaneous();
+  openAnimB() => bottomSheet.functions.openAnimated();
+  closeAnimB() => bottomSheet.functions.closeAnimated();
 
   Sheet topSheet;
-  toggleInstantT() => topSheet.toggleInstantaneous();
-  toggleAnimT() => topSheet.toggleAnimated();
-  openInstantT() => topSheet.openInstantaneous();
-  closeInstantT() => topSheet.closeInstantaneous();
-  openAnimT() => topSheet.openAnimated();
-  closeAnimT() => topSheet.closeAnimated();
+  toggleInstantT() => topSheet.functions.toggleInstantaneous();
+  toggleAnimT() => topSheet.functions.toggleAnimated();
+  openInstantT() => topSheet.functions.openInstantaneous();
+  closeInstantT() => topSheet.functions.closeInstantaneous();
+  openAnimT() => topSheet.functions.openAnimated();
+  closeAnimT() => topSheet.functions.closeAnimated();
 
   //-------------------------Build Function
 
   @override
   Widget build(BuildContext context) {
     rightSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         //-----Widgets
         app: new Container(),
         sheet: new Container(
@@ -177,7 +177,7 @@ class MultiSheets extends StatelessWidget {
     );
 
     leftSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         //-----Widgets
         app: Container(),
         sheet: new Container(
@@ -207,7 +207,7 @@ class MultiSheets extends StatelessWidget {
     );
 
     topSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         //-----Widgets
         app: Container(),
         sheet: new Container(
@@ -237,7 +237,7 @@ class MultiSheets extends StatelessWidget {
     );
 
     bottomSheet = new Sheet(
-      params: new Parameters(
+      parameters: new Parameters(
         //-----Widgets
         app: Container(),
         sheet: new Container(
