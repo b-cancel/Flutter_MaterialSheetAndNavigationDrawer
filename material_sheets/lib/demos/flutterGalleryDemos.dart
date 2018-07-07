@@ -522,7 +522,7 @@ class _ListDemoState extends State<ListDemo> {
                 new IconButton(
                   icon: const Icon(Icons.more_vert),
                   tooltip: 'Show menu',
-                  onPressed: toggleAnim,
+                  onPressed: () => toggleAnim(),
                 ),
               ],
             ),

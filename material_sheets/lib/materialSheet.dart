@@ -99,11 +99,11 @@ class PrivateFunctions{
 
 //TODO.... implement these functions
 class PublicFunctions{
-  //get information
+  //grab information
   Function getOpenPercent;
   Function getAttachmentSize;
   Function getSheetSize;
-  //execute command
+  //run command
   Function toggleInstantaneous;
   Function toggleAnimated;
   Function openInstantaneous;
@@ -112,50 +112,99 @@ class PublicFunctions{
   Function closeAnimated;
 }
 
-//-------------------------The Actual Sheet-------------------------
+//-------------------------Material Sheet-------------------------
 
-//NOTE: this has to be stateful because with WidgetsBindingObserver requires it and setState might be called
-class Sheet extends StatefulWidget {
+//NOTE: this has to be stateless so that I can address the sheetOpen and sheetClose Functions
+class Sheet extends StatelessWidget{
 
-  //public
-  final Parameters parameters; //USER ASSIGNED
-  final functions = new PublicFunctions();
-
-  //private
-  final _privateFunctions = new PrivateFunctions();
-  final _wholeKey = new GlobalKey(); //container that holds the attachment and the sheet
-  final _attachKey = new GlobalKey();
+  final Parameters parameters;
+  final PublicFunctions functions = new PublicFunctions();
 
   Sheet({
     @required this.parameters,
   });
 
   @override
+  Widget build(BuildContext context) {
+    return new MediaQuery(
+      data: MediaQueryData(),
+      child: new Directionality(
+        textDirection: TextDirection.ltr,
+        child: new Stack(
+          children: <Widget>[
+            parameters.app,
+            new SheetWidget(
+              parameter: parameters,
+              functions: functions,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//-------------------------The Actual Sheet-------------------------
+
+//NOTE: this has to be stateful because with WidgetsBindingObserver requires it and setState might be called
+class SheetWidget extends StatefulWidget {
+
+  final Parameters parameter;
+  final PublicFunctions functions;
+
+  SheetWidget({
+    @required this.parameter,
+    @required this.functions,
+  });
+
+  @override
   _SheetWidgetState createState() => new _SheetWidgetState();
 }
 
-class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
+class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Helper Functions
 
   toggleInstantaneous(){
-    if(widget._privateFunctions.getOpenPercent() == 1.0 || widget._privateFunctions.getOpenPercent() == 0.0)
-      (widget._privateFunctions.getOpenPercent() == 1.0) ? closeInstantaneous() : openInstantaneous();
+    if(private.getOpenPercent() == 1.0 || private.getOpenPercent() == 0.0)
+      (private.getOpenPercent() == 1.0) ? closeInstantaneous() : openInstantaneous();
   }
   toggleAnimated(){
-    if(widget._privateFunctions.getOpenPercent() == 1.0 || widget._privateFunctions.getOpenPercent() == 0.0)
-      (widget._privateFunctions.getOpenPercent() == 1.0) ? closeAnimated() : openAnimated();
+    if(private.getOpenPercent() == 1.0 || private.getOpenPercent() == 0.0)
+      (private.getOpenPercent() == 1.0) ? closeAnimated() : openAnimated();
   }
 
   //-----Instantaneous
-  openInstantaneous() => completeOpenOrClose(1.0, 0, widget._privateFunctions);
-  closeInstantaneous() => completeOpenOrClose(0.0, 0, widget._privateFunctions);
+  openInstantaneous() => completeOpenOrClose(1.0, 0, private);
+  closeInstantaneous() => completeOpenOrClose(0.0, 0, private);
 
   //-----Animated
-  openAnimated() => completeOpenOrClose(1.0, widget.parameters.animationSpeedInMilliseconds, widget._privateFunctions);
-  closeAnimated() => completeOpenOrClose(0.0, widget.parameters.animationSpeedInMilliseconds, widget._privateFunctions);
+  openAnimated() => completeOpenOrClose(1.0, params.animationSpeedInMilliseconds, private);
+  closeAnimated() => completeOpenOrClose(0.0, params.animationSpeedInMilliseconds, private);
+
+  linkPublicFunctions(){
+    widget.functions.toggleInstantaneous = toggleInstantaneous;
+    widget.functions.toggleAnimated = toggleAnimated;
+    widget.functions.openInstantaneous = openInstantaneous;
+    widget.functions.closeInstantaneous = closeInstantaneous;
+    widget.functions.openAnimated = openAnimated;
+    widget.functions.closeAnimated = closeAnimated;
+  }
+
+  static PrivateFunctions private = new PrivateFunctions();
+
+  //-------------------------Parameters
+
+  static Parameters params;
+
+  void _tieVarsBeforeBuildRun() {
+    params = widget.parameter;
+  }
 
   //-------------------------Local Variables
+
+  var wholeKey = new GlobalKey();
+  var attachKey = new GlobalKey();
 
   //-------------------------Required For Reading in sheetWidth and sheetHeight
 
@@ -186,22 +235,11 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
   double getOpenPercent() => openPercent;
   setOpenPercent(double newOP) => openPercent = newOP;
 
-  linkPublic(){
-    var w = widget.functions;
-
-    w.toggleInstantaneous = toggleInstantaneous;
-    w.toggleAnimated = toggleAnimated;
-    w.openInstantaneous = openInstantaneous;
-    w.closeInstantaneous = closeInstantaneous;
-    w.openAnimated = openAnimated;
-    w.closeAnimated = closeAnimated;
-  }
-
-  linkPrivate(){
+  linkLocalToGlobalFunctions(){
 
     //print("link");
 
-    var w = widget._privateFunctions;
+    var w = private;
 
     w.setOpenPercent = setOpenPercent;
     w.getOpenPercent = getOpenPercent;
@@ -217,19 +255,19 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
   }
 
   asyncLink() async{
-    await linkPrivate();
+    await linkLocalToGlobalFunctions();
     _initGlobalVar();
   }
 
   //-------------------------Required For Gestures and Animations
 
   _initGlobalVar() {
-    if(widget._privateFunctions.getSlideUpdateStream() == null){
-      widget._privateFunctions.setSlideUpdateStream(new StreamController<double>());
+    if(private.getSlideUpdateStream() == null){
+      private.setSlideUpdateStream(new StreamController<double>());
 
-      widget._privateFunctions.getSlideUpdateStream().stream.listen((double newPercent){
+      private.getSlideUpdateStream().stream.listen((double newPercent){
         setState(() {
-          widget._privateFunctions.setOpenPercent(newPercent);
+          private.setOpenPercent(newPercent);
         });
       });
     }
@@ -255,9 +293,9 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
 
   @override
   didPopRoute(){
-    bool override = widget.parameters.backBtnClosesSheet && (widget._privateFunctions.getOpenPercent() ==  1.0);
+    bool override = params.backBtnClosesSheet && (private.getOpenPercent() ==  1.0);
     if(override)
-      (widget.parameters.backBtnClosesAnimated) ? closeAnimated() : closeInstantaneous();
+      (params.backBtnClosesAnimated) ? closeAnimated() : closeInstantaneous();
     return new Future<bool>.value(override);
   }
 
@@ -269,39 +307,39 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
     height = height ?? 0.0;
 
     if(isWidthMax){ //mess with y
-      if(widget.parameters.position == sheetPosition.top) return Matrix4.translationValues(0.0, -height, 0.0);
+      if(params.position == sheetPosition.top) return Matrix4.translationValues(0.0, -height, 0.0);
       else return Matrix4.translationValues(0.0, height, 0.0);
     } else{ //mess with x
-      if(widget.parameters.position == sheetPosition.right) return Matrix4.translationValues(width, 0.0, 0.0);
+      if(params.position == sheetPosition.right) return Matrix4.translationValues(width, 0.0, 0.0);
       else return Matrix4.translationValues(-width, 0.0, 0.0);
     }
   }
 
   BoxConstraints _calcBoxConstraints(bool fullWidth) {
-    if (widget.parameters.sheetMin == null && widget.parameters.sheetMax == null)
+    if (params.sheetMin == null && params.sheetMax == null)
       return new BoxConstraints();
     else {
-      if (widget.parameters.sheetMin != null && widget.parameters.sheetMax != null) {
+      if (params.sheetMin != null && params.sheetMax != null) {
         if (fullWidth) //we only care for height
           return new BoxConstraints(
-            minHeight: widget.parameters.sheetMin,
-            maxHeight: widget.parameters.sheetMax,
+            minHeight: params.sheetMin,
+            maxHeight: params.sheetMax,
           );
         else //we only care for width
-          return new BoxConstraints(minWidth: widget.parameters.sheetMin, maxWidth: widget.parameters.sheetMax);
+          return new BoxConstraints(minWidth: params.sheetMin, maxWidth: params.sheetMax);
       } else {
-        if (widget.parameters.sheetMin != null) {
+        if (params.sheetMin != null) {
           //we only have min
           if (fullWidth) //we only care for height
-            return new BoxConstraints(minHeight: widget.parameters.sheetMin);
+            return new BoxConstraints(minHeight: params.sheetMin);
           else //we only care for width
-            return new BoxConstraints(minWidth: widget.parameters.sheetMin);
+            return new BoxConstraints(minWidth: params.sheetMin);
         } else {
           //we only have max
           if (fullWidth) //we only care for h`eight
-            return new BoxConstraints(maxHeight: widget.parameters.sheetMax);
+            return new BoxConstraints(maxHeight: params.sheetMax);
           else //we only care for width
-            return new BoxConstraints(maxWidth: widget.parameters.sheetMax);
+            return new BoxConstraints(maxWidth: params.sheetMax);
         }
       }
     }
@@ -309,22 +347,22 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
 
   //ONLY relevant if position is top or bottom
   TextDirection _calcTextDirection(){
-    if(widget.parameters.position == sheetPosition.right){
-      if(widget.parameters.placement == attachmentPlacement.inside) return TextDirection.rtl;
+    if(params.position == sheetPosition.right){
+      if(params.placement == attachmentPlacement.inside) return TextDirection.rtl;
       else return TextDirection.ltr;
     }else{
-      if(widget.parameters.placement == attachmentPlacement.inside) return TextDirection.ltr;
+      if(params.placement == attachmentPlacement.inside) return TextDirection.ltr;
       else return TextDirection.rtl;
     }
   }
 
   //ONLY relevant if position is left or right
   VerticalDirection _calcVerticalDirection(){
-    if(widget.parameters.position == sheetPosition.top){
-      if(widget.parameters.placement == attachmentPlacement.inside) return VerticalDirection.down;
+    if(params.position == sheetPosition.top){
+      if(params.placement == attachmentPlacement.inside) return VerticalDirection.down;
       else return VerticalDirection.up;
     }else{
-      if(widget.parameters.placement == attachmentPlacement.inside) return VerticalDirection.up;
+      if(params.placement == attachmentPlacement.inside) return VerticalDirection.up;
       else return VerticalDirection.down;
     }
   }
@@ -332,13 +370,13 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
   Matrix4 _calcTransform(bool isWidthMax, double width, double height){
     Matrix4 beginMatrix = Matrix4.translationValues(0.0,0.0,0.0);
     Matrix4 endMatrix = _calcSheetClosedTransform(isWidthMax, width, height);
-    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(widget._privateFunctions.getOpenPercent());
+    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(private.getOpenPercent());
   }
 
   Color _calcIndicatorColor(){
-    if(widget.parameters.autoOpenOrCloseIndicator){
-      if(widget._privateFunctions.getOpenPercent() > .5) return widget.parameters.indicatorAutoCloseColor.withOpacity(0.0);
-      else return widget.parameters.indicatorAutoCloseColor;
+    if(params.autoOpenOrCloseIndicator){
+      if(private.getOpenPercent() > .5) return params.indicatorAutoCloseColor.withOpacity(0.0);
+      else return params.indicatorAutoCloseColor;
     }
     else return Colors.transparent;
   }
@@ -347,42 +385,42 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
 
   Widget sheetWidget(double w, double h){
     return new Stack(
-      children: <Widget>[
-        new Container(
-          width: (w == 0.0) ? null : w,
-          height: (h == 0.0) ? null : h,
-          child: widget.parameters.sheet,
-        ),
-        new IgnorePointer(
-          child: new Container(
+        children: <Widget>[
+          new Container(
             width: (w == 0.0) ? null : w,
             height: (h == 0.0) ? null : h,
-            color: _calcIndicatorColor(),
+            child: params.sheet,
           ),
-        )
-      ]
-  );
+          new IgnorePointer(
+            child: new Container(
+              width: (w == 0.0) ? null : w,
+              height: (h == 0.0) ? null : h,
+              color: _calcIndicatorColor(),
+            ),
+          )
+        ]
+    );
 
   }
 
   Widget attachmentWidget(bool addKey){
-    Widget currAttach = widget.parameters.attachment;
-    if(currAttach == null && widget.parameters.swipeToOpen)
+    Widget currAttach = params.attachment;
+    if(currAttach == null && params.swipeToOpen)
       currAttach = new Icon(Icons.attachment, color: Colors.transparent);
 
     return new Container(
-      key: (addKey) ? widget._attachKey : null,
+      key: (addKey) ? attachKey : null,
       child: (currAttach != null) ? currAttach : null,
     );
   }
 
   Widget scrimWidget(){
-    if(widget.parameters.type == sheetType.modal){
-      if(widget._privateFunctions.getOpenPercent() != 0.0){
+    if(params.type == sheetType.modal){
+      if(private.getOpenPercent() != 0.0){
         return new Container(
-          color: Color.lerp(Colors.transparent, widget.parameters.scrimOpenColor, widget._privateFunctions.getOpenPercent()),
+          color: Color.lerp(Colors.transparent, params.scrimOpenColor, private.getOpenPercent()),
           child: new GestureDetector(
-            onTap: (widget.parameters.backBtnClosesAnimated) ? closeAnimated() : closeInstantaneous(),
+            onTap: () => (params.backBtnClosesAnimated) ? closeAnimated() : closeInstantaneous(),
           ),
         );
       }
@@ -396,10 +434,10 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
   Widget sheetAndAttachmentWidget(){
 
     //both of these are read in by build in the first build phase
-    double wholeWidth = widget._wholeKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
-    double wholeHeight = widget._wholeKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
-    double attachWidth = widget._attachKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
-    double attachHeight = widget._attachKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
+    double wholeWidth = wholeKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
+    double wholeHeight = wholeKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
+    double attachWidth = attachKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.width;
+    double attachHeight = attachKey?.currentContext?.findRenderObject()?.semanticBounds?.size?.height;
 
     double sheetWidth = (wholeWidth == null)
         ? 0.0
@@ -408,7 +446,7 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
         ? 0.0
         : (wholeHeight == attachHeight) ? wholeHeight : wholeHeight - attachHeight;
 
-    bool isWidthMax = (widget.parameters.position == sheetPosition.bottom || widget.parameters.position == sheetPosition.top);
+    bool isWidthMax = (params.position == sheetPosition.bottom || params.position == sheetPosition.top);
 
     Widget thisSheetWidget = sheetWidget(sheetWidth, sheetHeight);
 
@@ -419,11 +457,11 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
             ? Axis.vertical
             : Axis.horizontal,
         //ONLY relevant if position is top or bottom
-        textDirection: (widget.parameters.position == sheetPosition.right)
+        textDirection: (params.position == sheetPosition.right)
             ? TextDirection.ltr
             : TextDirection.rtl,
         //ONLY relevant if position is left or right
-        verticalDirection: (widget.parameters.position == sheetPosition.top)
+        verticalDirection: (params.position == sheetPosition.top)
             ? VerticalDirection.up
             : VerticalDirection.down,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -435,18 +473,18 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
           new ConstrainedBox(
             constraints: _calcBoxConstraints(isWidthMax),
             child: new Container(
-              key: widget._wholeKey,
+              key: wholeKey,
               color: Colors.transparent,
               child: new SwipeToOpenClose(
                 linkFunction: asyncLink,
-                globals: widget._privateFunctions,
+                globals: private,
                 isWidthMax: isWidthMax,
-                position: widget.parameters.position,
+                position: params.position,
                 sheetWidth: sheetWidth,
                 sheetHeight: sheetHeight,
-                swipeToOpen: widget.parameters.swipeToOpen,
-                swipeToClose: widget.parameters.swipeToClose,
-                animationSpeedInMilliseconds: widget.parameters.animationSpeedInMilliseconds,
+                swipeToOpen: params.swipeToOpen,
+                swipeToClose: params.swipeToClose,
+                animationSpeedInMilliseconds: params.animationSpeedInMilliseconds,
                 child: new Flex(
                   direction: (isWidthMax)
                       ? Axis.vertical
@@ -469,7 +507,7 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
 
     );
 
-    if(widget.parameters.placement == attachmentPlacement.inside){
+    if(params.placement == attachmentPlacement.inside){
       return mainWidget;
     }
     else{
@@ -482,11 +520,11 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
                   ? Axis.vertical
                   : Axis.horizontal,
               //ONLY relevant if position is top or bottom
-              textDirection: (widget.parameters.position == sheetPosition.right)
+              textDirection: (params.position == sheetPosition.right)
                   ? TextDirection.ltr
                   : TextDirection.rtl,
               //ONLY relevant if position is left or right
-              verticalDirection: (widget.parameters.position == sheetPosition.top)
+              verticalDirection: (params.position == sheetPosition.top)
                   ? VerticalDirection.up
                   : VerticalDirection.down,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -509,32 +547,25 @@ class _SheetWidgetState extends State<Sheet> with WidgetsBindingObserver{
   @override
   Widget build(BuildContext context) {
 
-    linkPrivate();
+    linkLocalToGlobalFunctions();
+    linkPublicFunctions();
 
-    if(widget._privateFunctions.getOpenPercent() == null)
-      widget._privateFunctions.setOpenPercent((widget.parameters.startOpen) ? 1.0 : 0.0);
+    //used to make our variables more easily addressable
+    _tieVarsBeforeBuildRun();
+
+    if(private.getOpenPercent() == null)
+      private.setOpenPercent((params.startOpen) ? 1.0 : 0.0);
 
     //---Required to read in sheetWidth and sheetHeight
     timesBuilt++;
     if(timesBuilt < requiredBuildsPerChange) rebuildAsync();
     else timesBuilt = 0;
 
-    return new MediaQuery(
-      data: MediaQueryData(),
-      child: new Directionality(
-        textDirection: TextDirection.ltr,
-        child: new Stack(
-          children: <Widget>[
-            widget.parameters.app,
-            new Stack(
-              children: <Widget>[
-                scrimWidget(),
-                sheetAndAttachmentWidget(),
-              ],
-            ),
-          ],
-        ),
-      ),
+    return new Stack(
+      children: <Widget>[
+        scrimWidget(),
+        sheetAndAttachmentWidget(),
+      ],
     );
   }
 }
