@@ -18,8 +18,8 @@
       <file leaf-file-name="main.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/main.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+            <state relative-caret-position="255">
+              <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -27,37 +27,35 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="materialSheet.dart" pinned="false" current-in-tab="true">
+      <file leaf-file-name="materialSheet.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/materialSheet.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="329" column="54" lean-forward="true" selection-start-line="329" selection-start-column="54" selection-end-line="329" selection-end-column="54" />
+            <state relative-caret-position="9418">
+              <caret line="554" column="37" lean-forward="false" selection-start-line="554" selection-start-column="37" selection-end-line="554" selection-end-column="37" />
               <folding>
-                <element signature="e#11801#12240#0" expanded="false" />
-                <element signature="e#12295#13289#0" expanded="false" />
-                <element signature="e#13374#13663#0" expanded="false" />
-                <element signature="e#13756#14059#0" expanded="false" />
-                <element signature="e#14131#14372#0" expanded="false" />
-                <element signature="e#14403#14616#0" expanded="false" />
-                <element signature="e#14711#15126#0" expanded="false" />
-                <element signature="e#15166#15452#0" expanded="false" />
-                <element signature="e#15476#15871#0" expanded="false" />
-                <element signature="e#19032#19996#0" expanded="false" />
-                <element signature="e#19052#19060#0" expanded="false" />
-                <element signature="e#19111#19976#0" expanded="false" />
-                <element signature="e#19140#19963#0" expanded="false" />
-                <element signature="e#19791#19799#0" expanded="false" />
-                <element signature="e#19829#19890#0" expanded="false" />
+                <element signature="e#0#19#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="otherDemos.dart" pinned="false" current-in-tab="false">
+      <file leaf-file-name="flutterGalleryDemos.dart" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/demos/flutterGalleryDemos.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="10846">
+              <caret line="638" column="27" lean-forward="false" selection-start-line="638" selection-start-column="27" selection-end-line="638" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="otherDemos.dart" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/demos/otherDemos.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="507">
-              <caret line="171" column="44" lean-forward="false" selection-start-line="171" selection-start-column="44" selection-end-line="171" selection-end-column="44" />
+            <state relative-caret-position="206">
+              <caret line="270" column="22" lean-forward="true" selection-start-line="270" selection-start-column="22" selection-end-line="270" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -87,13 +85,18 @@
       <find>slideupdatestre</find>
       <find>_slide</find>
       <find>animationopen</find>
-      <find>openpercent</find>
       <find>_animationticker</find>
       <find>_animationopenorclose</find>
       <find>_slideupdatestream</find>
       <find>asdfOpen</find>
       <find>.add</find>
       <find>print</find>
+      <find>animationticker</find>
+      <find>animationopenorclose</find>
+      <find>openpercent</find>
+      <find>animationSpeedInMilliseconds</find>
+      <find>app</find>
+      <find>attachment</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -105,10 +108,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/lib/demos/materialDemos.dart" />
-        <option value="$PROJECT_DIR$/lib/demos/flutterGalleryDemos.dart" />
         <option value="$PROJECT_DIR$/lib/main.dart" />
-        <option value="$PROJECT_DIR$/lib/demos/otherDemos.dart" />
         <option value="$PROJECT_DIR$/lib/materialSheet.dart" />
+        <option value="$PROJECT_DIR$/lib/demos/flutterGalleryDemos.dart" />
+        <option value="$PROJECT_DIR$/lib/demos/otherDemos.dart" />
       </list>
     </option>
   </component>
@@ -133,9 +136,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
       <pane id="AndroidView" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -159,7 +162,7 @@
         </subPane>
         <option name="show-excluded-files" value="false" />
       </pane>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -296,7 +299,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Dart Analysis" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25108695" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3054348" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Flutter Outline" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -332,6 +335,34 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/lib/main.dart">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/demos/otherDemos.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2890">
+          <caret line="171" column="44" lean-forward="false" selection-start-line="171" selection-start-column="44" selection-end-line="171" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/materialSheet.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="884">
+          <caret line="55" column="41" lean-forward="false" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/main.dart">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
@@ -345,21 +376,7 @@
         <state relative-caret-position="9911">
           <caret line="721" column="0" lean-forward="true" selection-start-line="721" selection-start-column="0" selection-end-line="721" selection-end-column="0" />
           <folding>
-            <element signature="e#11801#12240#0" expanded="false" />
-            <element signature="e#12295#13289#0" expanded="false" />
-            <element signature="e#13374#13663#0" expanded="false" />
-            <element signature="e#13756#14059#0" expanded="false" />
-            <element signature="e#14131#14372#0" expanded="false" />
-            <element signature="e#14403#14616#0" expanded="false" />
-            <element signature="e#14711#15126#0" expanded="false" />
-            <element signature="e#15166#15452#0" expanded="false" />
-            <element signature="e#15476#15871#0" expanded="false" />
-            <element signature="e#19032#19996#0" expanded="false" />
-            <element signature="e#19052#19060#0" expanded="false" />
-            <element signature="e#19111#19976#0" expanded="false" />
-            <element signature="e#19140#19963#0" expanded="false" />
-            <element signature="e#19791#19799#0" expanded="false" />
-            <element signature="e#19829#19890#0" expanded="false" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -379,21 +396,7 @@
         <state relative-caret-position="187">
           <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
-            <element signature="e#11801#12240#0" expanded="false" />
-            <element signature="e#12295#13289#0" expanded="false" />
-            <element signature="e#13374#13663#0" expanded="false" />
-            <element signature="e#13756#14059#0" expanded="false" />
-            <element signature="e#14131#14372#0" expanded="false" />
-            <element signature="e#14403#14616#0" expanded="false" />
-            <element signature="e#14711#15126#0" expanded="false" />
-            <element signature="e#15166#15452#0" expanded="false" />
-            <element signature="e#15476#15871#0" expanded="false" />
-            <element signature="e#19032#19996#0" expanded="false" />
-            <element signature="e#19052#19060#0" expanded="false" />
-            <element signature="e#19111#19976#0" expanded="false" />
-            <element signature="e#19140#19963#0" expanded="false" />
-            <element signature="e#19791#19799#0" expanded="false" />
-            <element signature="e#19829#19890#0" expanded="false" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -405,30 +408,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Program Files/flutter/packages/flutter/lib/src/widgets/framework.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="557" column="19" lean-forward="false" selection-start-line="557" selection-start-column="19" selection-end-line="557" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/main.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/demos/materialDemos.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="7" lean-forward="false" selection-start-line="0" selection-start-column="7" selection-end-line="0" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/materialSheet.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9418">
+          <caret line="554" column="37" lean-forward="false" selection-start-line="554" selection-start-column="37" selection-end-line="554" selection-end-column="37" />
           <folding>
-            <element signature="e#0#39#0" expanded="false" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/demos/flutterGalleryDemos.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="123" column="25" lean-forward="true" selection-start-line="123" selection-start-column="25" selection-end-line="123" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#39#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+        <state relative-caret-position="10846">
+          <caret line="638" column="27" lean-forward="false" selection-start-line="638" selection-start-column="27" selection-end-line="638" selection-end-column="27" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
@@ -437,33 +456,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/demos/otherDemos.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="507">
-          <caret line="171" column="44" lean-forward="false" selection-start-line="171" selection-start-column="44" selection-end-line="171" selection-end-column="44" />
+        <state relative-caret-position="206">
+          <caret line="270" column="22" lean-forward="true" selection-start-line="270" selection-start-column="22" selection-end-line="270" selection-end-column="22" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/materialSheet.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="329" column="54" lean-forward="true" selection-start-line="329" selection-start-column="54" selection-end-line="329" selection-end-column="54" />
-          <folding>
-            <element signature="e#11801#12240#0" expanded="false" />
-            <element signature="e#12295#13289#0" expanded="false" />
-            <element signature="e#13374#13663#0" expanded="false" />
-            <element signature="e#13756#14059#0" expanded="false" />
-            <element signature="e#14131#14372#0" expanded="false" />
-            <element signature="e#14403#14616#0" expanded="false" />
-            <element signature="e#14711#15126#0" expanded="false" />
-            <element signature="e#15166#15452#0" expanded="false" />
-            <element signature="e#15476#15871#0" expanded="false" />
-            <element signature="e#19032#19996#0" expanded="false" />
-            <element signature="e#19052#19060#0" expanded="false" />
-            <element signature="e#19111#19976#0" expanded="false" />
-            <element signature="e#19140#19963#0" expanded="false" />
-            <element signature="e#19791#19799#0" expanded="false" />
-            <element signature="e#19829#19890#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>

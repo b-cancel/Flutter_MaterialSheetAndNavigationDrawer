@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_sheets/materialSheet.dart';
 
+import 'dart:math';
+
 //-------------------------Persistent Bottom Sheet-------------------------
 
 class PersistentBottomSheet extends StatefulWidget {
@@ -12,7 +14,7 @@ class _PersistentBottomSheetState extends State<PersistentBottomSheet> {
   //-------------------------Helper Functions
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
-  MaterialSheet matSheet;
+  Sheet matSheet;
   toggleInstant() => matSheet.toggleInstantaneous();
   toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
@@ -54,60 +56,62 @@ class _PersistentBottomSheetState extends State<PersistentBottomSheet> {
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
 
-    matSheet = new MaterialSheet(
-      app: new MaterialApp(
-        home: new Scaffold(
-          appBar: new AppBar(
-            leading: new IconButton(
-              icon: new Icon(_backIcon()),
-              alignment: Alignment.centerLeft,
-              tooltip: 'Back',
-              onPressed: () => print("there is nothing to Pop"),
+    matSheet = new Sheet(
+      params: new Parameters(
+        app: new MaterialApp(
+          home: new Scaffold(
+            appBar: new AppBar(
+              leading: new IconButton(
+                icon: new Icon(_backIcon()),
+                alignment: Alignment.centerLeft,
+                tooltip: 'Back',
+                onPressed: () => print("there is nothing to Pop"),
+              ),
+              title: const Text('Persistent bottom sheet'),
             ),
-            title: const Text('Persistent bottom sheet'),
-          ),
-          body: new Center(
-            child: new RaisedButton(
-              onPressed: openAnim,
-              child: const Text('SHOW BOTTOM SHEET'),
-            ),
-          ),
-        ),
-      ),
-      sheet: new Material(
-        child: new Container(
-          decoration: new BoxDecoration(
-            color: themeData.scaffoldBackgroundColor,
-            border: new Border(
-              top: new BorderSide(
-                  color: themeData.disabledColor
+            body: new Center(
+              child: new RaisedButton(
+                onPressed: openAnim,
+                child: const Text('SHOW BOTTOM SHEET'),
               ),
             ),
           ),
-          child: new Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: new Text(
-              'This is a Material persistent bottom sheet. Drag downwards to dismiss it.',
-              textAlign: TextAlign.center,
-              style: new TextStyle(color: themeData.accentColor, fontSize: 24.0, ),
+        ),
+        sheet: new Material(
+          child: new Container(
+            decoration: new BoxDecoration(
+              color: themeData.scaffoldBackgroundColor,
+              border: new Border(
+                top: new BorderSide(
+                    color: themeData.disabledColor
+                ),
+              ),
+            ),
+            child: new Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: new Text(
+                'This is a Material persistent bottom sheet. Drag downwards to dismiss it.',
+                textAlign: TextAlign.center,
+                style: new TextStyle(color: themeData.accentColor, fontSize: 24.0, ),
+              ),
             ),
           ),
         ),
-      ),
-      attachment: new Container(
-        alignment: Alignment.bottomRight,
-        padding: EdgeInsets.all(16.0),
-        child: new FloatingActionButton(
-          onPressed: _showMessage,
-          backgroundColor: Colors.redAccent,
-          child: const Icon(
-            Icons.add,
-            semanticLabel: 'Add',
+        attachment: new Container(
+          alignment: Alignment.bottomRight,
+          padding: EdgeInsets.all(16.0),
+          child: new FloatingActionButton(
+            onPressed: _showMessage,
+            backgroundColor: Colors.redAccent,
+            child: const Icon(
+              Icons.add,
+              semanticLabel: 'Add',
+            ),
           ),
         ),
+        type: sheetType.persistent,
+        swipeToOpen: false,
       ),
-      type: sheetType.persistent,
-      swipeToOpen: false,
     );
 
     return matSheet;
@@ -121,7 +125,7 @@ class ModalBottomSheet extends StatelessWidget {
   //-------------------------Helper Functions
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
-  MaterialSheet matSheet;
+  Sheet matSheet;
   toggleInstant() => matSheet.toggleInstantaneous();
   toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
@@ -144,45 +148,47 @@ class ModalBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    matSheet = new MaterialSheet(
-      app: new MaterialApp(
-        home: new Scaffold(
-          appBar: new AppBar(
-            leading: new IconButton(
-              icon: new Icon(_backIcon(context)),
-              alignment: Alignment.centerLeft,
-              tooltip: 'Back',
-              onPressed: () => print("there is nothing to Pop"),
+    matSheet = new Sheet(
+      params: new Parameters(
+        app: new MaterialApp(
+          home: new Scaffold(
+            appBar: new AppBar(
+              leading: new IconButton(
+                icon: new Icon(_backIcon(context)),
+                alignment: Alignment.centerLeft,
+                tooltip: 'Back',
+                onPressed: () => print("there is nothing to Pop"),
+              ),
+              title: const Text('Modal bottom sheet'),
             ),
-            title: const Text('Modal bottom sheet'),
-          ),
-          body: new Center(
-            child: new RaisedButton(
-              child: const Text('SHOW BOTTOM SHEET'),
-              onPressed: openAnim,
-            ),
-          ),
-        ),
-      ),
-      sheet: new Material(
-        child: new Container(
-          child: new Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: new Text(
-              'This is the modal bottom sheet. Click anywhere to dismiss.',
-              textAlign: TextAlign.center,
-              style: new TextStyle(
-                  color: Theme
-                      .of(context)
-                      .accentColor,
-                  fontSize: 24.0
+            body: new Center(
+              child: new RaisedButton(
+                child: const Text('SHOW BOTTOM SHEET'),
+                onPressed: openAnim,
               ),
             ),
           ),
         ),
+        sheet: new Material(
+          child: new Container(
+            child: new Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: new Text(
+                'This is the modal bottom sheet. Click anywhere to dismiss.',
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                    color: Theme
+                        .of(context)
+                        .accentColor,
+                    fontSize: 24.0
+                ),
+              ),
+            ),
+          ),
+        ),
+        type: sheetType.modal,
+        swipeToOpen: false,
       ),
-      type: sheetType.modal,
-      swipeToOpen: false,
     );
 
     return matSheet;
@@ -206,7 +212,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>{
   //-------------------------Helper Functions
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
-  MaterialSheet matSheet;
+  Sheet matSheet;
   toggleInstant() => matSheet.toggleInstantaneous();
   toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
@@ -259,7 +265,8 @@ class _NavigationDrawerState extends State<NavigationDrawer>{
   @override
   Widget build(BuildContext context) {
 
-    matSheet = new MaterialSheet(
+    matSheet = new Sheet(
+      params: new Parameters(
         app: new MaterialApp(
           home: new Scaffold(
             key: _scaffoldKey,
@@ -409,7 +416,8 @@ class _NavigationDrawerState extends State<NavigationDrawer>{
             */
           ],
         ),
-      position: sheetPosition.left,
+        position: sheetPosition.left,
+      ),
     );
 
     return matSheet;
@@ -454,7 +462,7 @@ class _ListDemoState extends State<ListDemo> {
   //-------------------------Helper Functions
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
-  MaterialSheet matSheet;
+  Sheet matSheet;
   toggleInstant() => matSheet.toggleInstantaneous();
   toggleAnim() => matSheet.toggleAnimated();
   openInstant() => matSheet.openInstantaneous();
@@ -487,7 +495,8 @@ class _ListDemoState extends State<ListDemo> {
     if (_showDividers)
       listTiles = ListTile.divideTiles(context: context, tiles: listTiles);
 
-    matSheet = new MaterialSheet(
+    matSheet = new Sheet(
+      params: new Parameters(
         app: new MaterialApp(
           home: new Scaffold(
             key: scaffoldKey,
@@ -626,8 +635,9 @@ class _ListDemoState extends State<ListDemo> {
             ],
           ),
         ),
-      type: sheetType.persistent,
-      swipeToOpen: false,
+        type: sheetType.persistent,
+        swipeToOpen: false,
+      ),
     );
 
     return  new Material(child: matSheet);

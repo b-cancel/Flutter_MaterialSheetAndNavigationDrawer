@@ -1,11 +1,8 @@
+import 'dart:math';
 import 'dart:ui';
-
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-//TODO... refactor
-
-//TODO... convert to class of functions that can be accessible from anywhere
+import 'package:flutter/material.dart';
 
 //-------------------------Enumerations-------------------------
 
@@ -13,56 +10,9 @@ enum sheetPosition { top, right, bottom, left }
 enum sheetType { modal, persistent }
 enum attachmentPlacement { inside, outside }
 
-//-------------------------Global Variables (different for each instance)-------------------------
+//-------------------------Passed Parameters-------------------------
 
-class GlobalFunctions{
-  Function getAnimationTicker;
-  Function setAnimationTicker;
-
-  Function getAnimationOpenOrClose;
-  Function setAnimationOpenOrClose;
-
-  Function getSlideUpdateStream;
-  Function setSlideUpdateStream;
-
-  Function getOpenPercent;
-  Function setOpenPercent;
-}
-
-//-------------------------Material Sheet-------------------------
-
-//NOTE: this has to be stateless so that I can address the sheetOpen and sheetClose Functions
-class MaterialSheet extends StatelessWidget{
-
-  //-------------------------Parameters
-
-  MaterialSheet(
-      {Key key,
-        @required this.app,
-        @required this.sheet,
-        this.attachment,
-
-        this.startOpen: false,
-        this.position: sheetPosition.bottom,
-        this.type: sheetType.modal,
-        this.placement: attachmentPlacement.inside,
-        this.backBtnClosesSheet: true,
-        this.backBtnClosesAnimated: true,
-        this.autoOpenOrCloseIndicator: false,
-
-        this.swipeToOpen: true,
-        this.swipeToClose: true,
-
-        this.animationSpeedInMilliseconds: 100, //full anim should take 200, auto anim completes the anim up to 50% so 100
-        this.indicatorAutoCloseColor: const Color.fromRGBO(0,0,0,.5),
-        this.scrimOpenColor: const Color.fromRGBO(0,0,0,.5),
-
-        //TODO... In Progress
-        this.sheetMin,
-        this.sheetMax,
-      })
-      : super(key: key);
-
+class Parameters{
   //the application that the sheet is going to appear in front of
   final Widget app;
   //the primary sheet component that shows the content that shows and hides
@@ -99,34 +49,97 @@ class MaterialSheet extends StatelessWidget{
   //the scrim color that will be linearly interpolated to as you open or close a modal sheet
   final Color scrimOpenColor;
 
-  //---------TODO... In Progress
   //if you have too little content you still want your sheet to be a particular size (might have to align)
   final double sheetMin;
   //if you dont want your sheet to be larger than a certain size
   final double sheetMax; //TODO... set inherent limit (max size).... allow overflow to just be scrolled
 
+  Parameters({
+    this.app,
+    this.sheet,
+    this.attachment,
+
+    this.startOpen: false,
+    this.position: sheetPosition.bottom,
+    this.type: sheetType.modal,
+    this.placement: attachmentPlacement.inside,
+    this.backBtnClosesSheet: true,
+    this.backBtnClosesAnimated: true,
+    this.autoOpenOrCloseIndicator: false,
+
+    this.swipeToOpen: true,
+    this.swipeToClose: true,
+
+    this.animationSpeedInMilliseconds: 100, //full anim should take 200, auto anim completes the anim up to 50% so 100
+    this.indicatorAutoCloseColor: const Color.fromRGBO(0,0,0,.5),
+    this.scrimOpenColor: const Color.fromRGBO(0,0,0,.5),
+
+    this.sheetMin,
+    this.sheetMax, //TODO... In Progress
+  });
+}
+
+//-------------------------Private Functions-------------------------
+
+class PrivateFunctions{
+  Function getAnimationTicker;
+  Function setAnimationTicker;
+
+  Function getAnimationOpenOrClose;
+  Function setAnimationOpenOrClose;
+
+  Function getSlideUpdateStream;
+  Function setSlideUpdateStream;
+
+  Function getOpenPercent;
+  Function setOpenPercent;
+}
+
+//-------------------------Public Functions-------------------------
+
+//TODO.... implement these functions
+class PublicFunctions{
+  Function getOpenPercent;
+  Function getAttachmentSize;
+  Function getSheetSize;
+}
+
+//-------------------------Material Sheet-------------------------
+
+//NOTE: this has to be stateless so that I can address the sheetOpen and sheetClose Functions
+class Sheet extends StatelessWidget{
+
+  //-------------------------Parameters
+
+  final Parameters params;
+
+  Sheet({
+    @required this.params,
+  });
+
   //-------------------------"Instance Global"
 
-  final globals = new GlobalFunctions();
+  final _privateFunctions = new PrivateFunctions(); //these functions have to be retied each time you run setState
+  final publicFunctions = new PublicFunctions();
 
   //-------------------------Helper Functions
 
   toggleInstantaneous(){
-    if(globals.getOpenPercent() == 1.0 || globals.getOpenPercent() == 0.0)
-      (globals.getOpenPercent() == 1.0) ? closeInstantaneous() : openInstantaneous();
+    if(_privateFunctions.getOpenPercent() == 1.0 || _privateFunctions.getOpenPercent() == 0.0)
+      (_privateFunctions.getOpenPercent() == 1.0) ? closeInstantaneous() : openInstantaneous();
   }
   toggleAnimated(){
-    if(globals.getOpenPercent() == 1.0 || globals.getOpenPercent() == 0.0)
-      (globals.getOpenPercent() == 1.0) ? closeAnimated() : openAnimated();
+    if(_privateFunctions.getOpenPercent() == 1.0 || _privateFunctions.getOpenPercent() == 0.0)
+      (_privateFunctions.getOpenPercent() == 1.0) ? closeAnimated() : openAnimated();
   }
 
   //-----Instantaneous
-  openInstantaneous() => completeOpenOrClose(1.0, 0, globals);
-  closeInstantaneous() => completeOpenOrClose(0.0, 0, globals);
+  openInstantaneous() => completeOpenOrClose(1.0, 0, _privateFunctions);
+  closeInstantaneous() => completeOpenOrClose(0.0, 0, _privateFunctions);
 
   //-----Animated
-  openAnimated() => completeOpenOrClose(1.0, animationSpeedInMilliseconds, globals);
-  closeAnimated() => completeOpenOrClose(0.0, animationSpeedInMilliseconds, globals);
+  openAnimated() => completeOpenOrClose(1.0, params.animationSpeedInMilliseconds, _privateFunctions);
+  closeAnimated() => completeOpenOrClose(0.0, params.animationSpeedInMilliseconds, _privateFunctions);
 
   //-------------------------Build Method
 
@@ -138,31 +151,11 @@ class MaterialSheet extends StatelessWidget{
         textDirection: TextDirection.ltr,
         child: new Stack(
           children: <Widget>[
-            app,
+            params.app,
             new SheetWidget(
-              startOpen: startOpen,
-              globals: globals,
-
-              closeSheetFunc: (backBtnClosesAnimated) ? closeAnimated : closeInstantaneous,
-
-              sheet: sheet,
-              attachment: attachment,
-
-              position: position,
-              type: type,
-              placement: placement,
-              backBtnClosesSheet: backBtnClosesSheet,
-              autoOpenOrCloseIndicator: autoOpenOrCloseIndicator,
-
-              swipeToOpen: swipeToOpen,
-              swipeToClose: swipeToClose,
-
-              animationSpeedInMilliseconds: animationSpeedInMilliseconds,
-              indicatorAutoCloseColor: indicatorAutoCloseColor,
-              scrimOpenColor: scrimOpenColor,
-
-              sheetMin: sheetMin,
-              sheetMax: sheetMax, //TODO... in progress
+              private: _privateFunctions,
+              closeSheet: (params.backBtnClosesAnimated) ? closeAnimated : closeInstantaneous,
+              params: params,
             ),
           ],
         ),
@@ -179,60 +172,14 @@ class SheetWidget extends StatefulWidget {
   //-------------------------Parameters
 
   const SheetWidget({
-    Key key,
+    @required this.private,
+    @required this.closeSheet,
+    @required this.params,
+  });
 
-    @required this.startOpen,
-
-    @required this.globals,
-
-    @required this.closeSheetFunc,
-
-    @required this.sheet,
-    @required this.attachment,
-
-    @required this.position,
-    @required this.type,
-    @required this.placement,
-    @required this.backBtnClosesSheet,
-    @required this.autoOpenOrCloseIndicator,
-
-    @required this.swipeToOpen,
-    @required this.swipeToClose,
-
-    @required this.animationSpeedInMilliseconds,
-    @required this.indicatorAutoCloseColor,
-    @required this.scrimOpenColor,
-
-    //TODO... in progress
-    @required this.sheetMin,
-    @required this.sheetMax,
-  }) : super(key: key);
-
-  final bool startOpen;
-
-  final GlobalFunctions globals;
-
-  final Function closeSheetFunc;
-
-  final Widget sheet;
-  final Widget attachment;
-
-  final sheetPosition position;
-  final sheetType type;
-  final attachmentPlacement placement;
-  final bool backBtnClosesSheet;
-  final bool autoOpenOrCloseIndicator;
-
-  final bool swipeToOpen;
-  final bool swipeToClose;
-
-  final int animationSpeedInMilliseconds;
-  final Color indicatorAutoCloseColor;
-  final Color scrimOpenColor;
-
-  //TODO... in progress
-  final double sheetMin;
-  final double sheetMax;
+  final PrivateFunctions private;
+  final Function closeSheet;
+  final Parameters params;
 
   @override
   _SheetWidgetState createState() => new _SheetWidgetState();
@@ -242,57 +189,15 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Parameters
 
-  static bool startOpen;
-
-  static GlobalFunctions globals;
-
+  static PrivateFunctions private;
   static Function closeSheetFunc;
-
-  static Widget sheet;
-  static Widget attachment;
-
-  static sheetPosition position;
-  static sheetType type;
-  static attachmentPlacement placement;
-  static bool backBtnClosesSheet;
-  static bool autoOpenOrCloseIndicator;
-
-  static bool swipeToOpen;
-  static bool swipeToClose;
-
-  static int animationSpeedInMilliseconds;
-  static Color indicatorAutoCloseColor;
-  static Color scrimOpenColor;
-
-  //TODO... in progress
-  static double sheetMin;
-  static double sheetMax;
+  static Parameters params;
 
   void _tieVarsBeforeBuildRun() {
-    startOpen = widget.startOpen;
 
-    globals = widget.globals;
-
-    closeSheetFunc = widget.closeSheetFunc;
-
-    sheet = widget.sheet;
-    attachment = widget.attachment;
-    position = widget.position;
-    type = widget.type;
-    placement = widget.placement;
-    backBtnClosesSheet = widget.backBtnClosesSheet;
-    autoOpenOrCloseIndicator = widget.autoOpenOrCloseIndicator;
-
-    swipeToOpen = widget.swipeToOpen;
-    swipeToClose = widget.swipeToClose;
-
-    animationSpeedInMilliseconds = widget.animationSpeedInMilliseconds;
-    indicatorAutoCloseColor = widget.indicatorAutoCloseColor;
-    scrimOpenColor = widget.scrimOpenColor;
-
-    //TODO.... in progress
-    sheetMin = widget.sheetMin;
-    sheetMax = widget.sheetMax;
+    private = widget.private;
+    closeSheetFunc = widget.closeSheet;
+    params = widget.params;
   }
 
   //-------------------------Local Variables
@@ -333,7 +238,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
     //print("link");
 
-    var w = widget.globals;
+    var w = widget.private;
 
     w.setOpenPercent = setOpenPercent;
     w.getOpenPercent = getOpenPercent;
@@ -356,12 +261,12 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   //-------------------------Required For Gestures and Animations
 
   _initGlobalVar() {
-    if(globals.getSlideUpdateStream() == null){
-      globals.setSlideUpdateStream(new StreamController<double>());
+    if(private.getSlideUpdateStream() == null){
+      private.setSlideUpdateStream(new StreamController<double>());
 
-      globals.getSlideUpdateStream().stream.listen((double newPercent){
+      private.getSlideUpdateStream().stream.listen((double newPercent){
         setState(() {
-          globals.setOpenPercent(newPercent);
+          private.setOpenPercent(newPercent);
         });
       });
     }
@@ -387,7 +292,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   @override
   didPopRoute(){
-    bool override = backBtnClosesSheet && (globals.getOpenPercent() ==  1.0);
+    bool override = params.backBtnClosesSheet && (private.getOpenPercent() ==  1.0);
     if(override)
       closeSheetFunc();
     return new Future<bool>.value(override);
@@ -401,39 +306,39 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     height = height ?? 0.0;
 
     if(isWidthMax){ //mess with y
-      if(position == sheetPosition.top) return Matrix4.translationValues(0.0, -height, 0.0);
+      if(params.position == sheetPosition.top) return Matrix4.translationValues(0.0, -height, 0.0);
       else return Matrix4.translationValues(0.0, height, 0.0);
     } else{ //mess with x
-      if(position == sheetPosition.right) return Matrix4.translationValues(width, 0.0, 0.0);
+      if(params.position == sheetPosition.right) return Matrix4.translationValues(width, 0.0, 0.0);
       else return Matrix4.translationValues(-width, 0.0, 0.0);
     }
   }
 
   BoxConstraints _calcBoxConstraints(bool fullWidth) {
-    if (sheetMin == null && sheetMax == null)
+    if (params.sheetMin == null && params.sheetMax == null)
       return new BoxConstraints();
     else {
-      if (sheetMin != null && sheetMax != null) {
+      if (params.sheetMin != null && params.sheetMax != null) {
         if (fullWidth) //we only care for height
           return new BoxConstraints(
-            minHeight: sheetMin,
-            maxHeight: sheetMax,
+            minHeight: params.sheetMin,
+            maxHeight: params.sheetMax,
           );
         else //we only care for width
-          return new BoxConstraints(minWidth: sheetMin, maxWidth: sheetMax);
+          return new BoxConstraints(minWidth: params.sheetMin, maxWidth: params.sheetMax);
       } else {
-        if (sheetMin != null) {
+        if (params.sheetMin != null) {
           //we only have min
           if (fullWidth) //we only care for height
-            return new BoxConstraints(minHeight: sheetMin);
+            return new BoxConstraints(minHeight: params.sheetMin);
           else //we only care for width
-            return new BoxConstraints(minWidth: sheetMin);
+            return new BoxConstraints(minWidth: params.sheetMin);
         } else {
           //we only have max
           if (fullWidth) //we only care for h`eight
-            return new BoxConstraints(maxHeight: sheetMax);
+            return new BoxConstraints(maxHeight: params.sheetMax);
           else //we only care for width
-            return new BoxConstraints(maxWidth: sheetMax);
+            return new BoxConstraints(maxWidth: params.sheetMax);
         }
       }
     }
@@ -441,22 +346,22 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //ONLY relevant if position is top or bottom
   TextDirection _calcTextDirection(){
-    if(position == sheetPosition.right){
-      if(placement == attachmentPlacement.inside) return TextDirection.rtl;
+    if(params.position == sheetPosition.right){
+      if(params.placement == attachmentPlacement.inside) return TextDirection.rtl;
       else return TextDirection.ltr;
     }else{
-      if(placement == attachmentPlacement.inside) return TextDirection.ltr;
+      if(params.placement == attachmentPlacement.inside) return TextDirection.ltr;
       else return TextDirection.rtl;
     }
   }
 
   //ONLY relevant if position is left or right
   VerticalDirection _calcVerticalDirection(){
-    if(position == sheetPosition.top){
-      if(placement == attachmentPlacement.inside) return VerticalDirection.down;
+    if(params.position == sheetPosition.top){
+      if(params.placement == attachmentPlacement.inside) return VerticalDirection.down;
       else return VerticalDirection.up;
     }else{
-      if(placement == attachmentPlacement.inside) return VerticalDirection.up;
+      if(params.placement == attachmentPlacement.inside) return VerticalDirection.up;
       else return VerticalDirection.down;
     }
   }
@@ -464,13 +369,13 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   Matrix4 _calcTransform(bool isWidthMax, double width, double height){
     Matrix4 beginMatrix = Matrix4.translationValues(0.0,0.0,0.0);
     Matrix4 endMatrix = _calcSheetClosedTransform(isWidthMax, width, height);
-    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(globals.getOpenPercent());
+    return Matrix4Tween(begin: endMatrix, end: beginMatrix).lerp(private.getOpenPercent());
   }
 
   Color _calcIndicatorColor(){
-    if(autoOpenOrCloseIndicator){
-      if(globals.getOpenPercent() > .5) return indicatorAutoCloseColor.withOpacity(0.0);
-      else return indicatorAutoCloseColor;
+    if(params.autoOpenOrCloseIndicator){
+      if(private.getOpenPercent() > .5) return params.indicatorAutoCloseColor.withOpacity(0.0);
+      else return params.indicatorAutoCloseColor;
     }
     else return Colors.transparent;
   }
@@ -483,7 +388,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
         new Container(
           width: (w == 0.0) ? null : w,
           height: (h == 0.0) ? null : h,
-          child: sheet,
+          child: params.sheet,
         ),
         new IgnorePointer(
           child: new Container(
@@ -498,8 +403,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   }
 
   Widget attachmentWidget(bool addKey){
-    Widget currAttach = attachment;
-    if(currAttach == null && swipeToOpen)
+    Widget currAttach = params.attachment;
+    if(currAttach == null && params.swipeToOpen)
       currAttach = new Icon(Icons.attachment, color: Colors.transparent);
 
     return new Container(
@@ -509,10 +414,10 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   }
 
   Widget scrimWidget(){
-    if(type == sheetType.modal){
-      if(globals.getOpenPercent() != 0.0){
+    if(params.type == sheetType.modal){
+      if(private.getOpenPercent() != 0.0){
         return new Container(
-          color: Color.lerp(Colors.transparent, scrimOpenColor, globals.getOpenPercent()),
+          color: Color.lerp(Colors.transparent, params.scrimOpenColor, private.getOpenPercent()),
           child: new GestureDetector(
             onTap: closeSheetFunc,
           ),
@@ -540,7 +445,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
         ? 0.0
         : (wholeHeight == attachHeight) ? wholeHeight : wholeHeight - attachHeight;
 
-    bool isWidthMax = (position == sheetPosition.bottom || position == sheetPosition.top);
+    bool isWidthMax = (params.position == sheetPosition.bottom || params.position == sheetPosition.top);
 
     Widget thisSheetWidget = sheetWidget(sheetWidth, sheetHeight);
 
@@ -551,11 +456,11 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
             ? Axis.vertical
             : Axis.horizontal,
         //ONLY relevant if position is top or bottom
-        textDirection: (position == sheetPosition.right)
+        textDirection: (params.position == sheetPosition.right)
             ? TextDirection.ltr
             : TextDirection.rtl,
         //ONLY relevant if position is left or right
-        verticalDirection: (position == sheetPosition.top)
+        verticalDirection: (params.position == sheetPosition.top)
             ? VerticalDirection.up
             : VerticalDirection.down,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -571,14 +476,14 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
               color: Colors.transparent,
               child: new SwipeToOpenClose(
                 linkFunction: asyncLink,
-                globals: globals,
+                globals: private,
                 isWidthMax: isWidthMax,
-                position: position,
+                position: params.position,
                 sheetWidth: sheetWidth,
                 sheetHeight: sheetHeight,
-                swipeToOpen: swipeToOpen,
-                swipeToClose: swipeToClose,
-                animationSpeedInMilliseconds: animationSpeedInMilliseconds,
+                swipeToOpen: params.swipeToOpen,
+                swipeToClose: params.swipeToClose,
+                animationSpeedInMilliseconds: params.animationSpeedInMilliseconds,
                 child: new Flex(
                   direction: (isWidthMax)
                       ? Axis.vertical
@@ -601,7 +506,7 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
     );
 
-    if(placement == attachmentPlacement.inside){
+    if(params.placement == attachmentPlacement.inside){
       return mainWidget;
     }
     else{
@@ -614,11 +519,11 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
                   ? Axis.vertical
                   : Axis.horizontal,
               //ONLY relevant if position is top or bottom
-              textDirection: (position == sheetPosition.right)
+              textDirection: (params.position == sheetPosition.right)
                   ? TextDirection.ltr
                   : TextDirection.rtl,
               //ONLY relevant if position is left or right
-              verticalDirection: (position == sheetPosition.top)
+              verticalDirection: (params.position == sheetPosition.top)
                   ? VerticalDirection.up
                   : VerticalDirection.down,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -646,8 +551,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
     //used to make our variables more easily addressable
     _tieVarsBeforeBuildRun();
 
-    if(globals.getOpenPercent() == null)
-      globals.setOpenPercent((startOpen) ? 1.0 : 0.0);
+    if(private.getOpenPercent() == null)
+      private.setOpenPercent((params.startOpen) ? 1.0 : 0.0);
 
     //---Required to read in sheetWidth and sheetHeight
     timesBuilt++;
@@ -688,7 +593,7 @@ class SwipeToOpenClose extends StatefulWidget {
 
   final Function linkFunction;
 
-  final GlobalFunctions globals;
+  final PrivateFunctions globals;
 
   final bool isWidthMax;
   final sheetPosition position;
@@ -779,7 +684,7 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
 
 //-------------------------Animation Code-------------------------
 
-completeOpenOrClose(double goalOpenPercent, int millisecondsToComplete, GlobalFunctions globals){
+completeOpenOrClose(double goalOpenPercent, int millisecondsToComplete, PrivateFunctions globals){
   if(globals.getAnimationOpenOrClose() == null){
     var newOOCA = new OpenOrCloseAnimation(
       startOpenPercent: globals.getOpenPercent(),
