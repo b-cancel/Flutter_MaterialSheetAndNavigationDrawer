@@ -1,4 +1,4 @@
-# Flutter_MaterialSheetAndNavigationDrawer MASSIVE CHANGES NOT YET EXPLAINED, DOCUMENT NOT UPDATED
+# Flutter_MaterialSheetAndNavigationDrawer
 
 <h3>Purpose</h3>
 
