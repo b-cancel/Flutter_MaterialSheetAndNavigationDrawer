@@ -15,6 +15,9 @@ class _PersistentBottomSheetState extends State<PersistentBottomSheet> {
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
   Sheet matSheet;
+  getOpenPercent() => matSheet.functions.getOpenPercent();
+  getSheetSize() => matSheet.functions.getSheetSize();
+  getAttachmentSize() => matSheet.functions.getAttachmentSize();
   toggleInstant() => matSheet.functions.toggleInstantaneous();
   toggleAnim() => matSheet.functions.toggleAnimated();
   openInstant() => matSheet.functions.openInstantaneous();

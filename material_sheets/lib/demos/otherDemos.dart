@@ -173,6 +173,7 @@ class MultiSheets extends StatelessWidget {
         position: sheetPosition.right,
         autoOpenOrCloseIndicator: true,
         placement: attachmentPlacement.inside,
+        type: sheetType.persistent,
       ),
     );
 
@@ -193,7 +194,7 @@ class MultiSheets extends StatelessWidget {
           ),
         ),
         attachment: new Container(
-          color: Colors.pinkAccent,
+          color: Colors.orangeAccent,
           child: new Icon(
             Icons.attachment,
             color: Colors.white,
@@ -203,6 +204,7 @@ class MultiSheets extends StatelessWidget {
         position: sheetPosition.left,
         autoOpenOrCloseIndicator: true,
         placement: attachmentPlacement.inside,
+        type: sheetType.persistent,
       ),
     );
 
@@ -224,15 +226,24 @@ class MultiSheets extends StatelessWidget {
         ),
         attachment: new Container(
           color: Colors.pinkAccent,
-          child: new Icon(
-            Icons.attachment,
-            color: Colors.white,
-          ),
+          child: new Column(
+            children: <Widget>[
+              new Icon(
+                Icons.attachment,
+                color: Colors.white,
+              ),
+              new Icon(
+                Icons.attachment,
+                color: Colors.white,
+              ),
+            ],
+          )
         ),
         //-----Other Vars
         position: sheetPosition.top,
         autoOpenOrCloseIndicator: true,
         placement: attachmentPlacement.inside,
+        type: sheetType.persistent,
       ),
     );
 
@@ -263,6 +274,7 @@ class MultiSheets extends StatelessWidget {
         position: sheetPosition.bottom,
         autoOpenOrCloseIndicator: true,
         placement: attachmentPlacement.inside,
+        type: sheetType.persistent,
       ),
     );
 
@@ -272,7 +284,7 @@ class MultiSheets extends StatelessWidget {
           color: Colors.blue,
           child: new Center(
             child: new Text(
-              "MAIN",
+              "SOME APP",
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -280,9 +292,9 @@ class MultiSheets extends StatelessWidget {
           ),
         ),
         rightSheet,
-        //leftSheet,
-        //bottomSheet,
-        //topSheet,
+        leftSheet,
+        bottomSheet,
+        topSheet,
       ],
     );
   }

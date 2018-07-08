@@ -43,7 +43,7 @@ class Parameters{
   final bool swipeToClose;
 
   //how long the animator will take to automatically complete the closing or opening of the sheet
-  final int animationSpeedInMilliseconds;
+  final int maxAnimationTimeInMilliseconds;
   //the color that shows up over the sheet when the animator will automatically close the sheet if the sheet is let go
   final Color indicatorAutoCloseColor;
   //the scrim color that will be linearly interpolated to as you open or close a modal sheet
@@ -58,8 +58,8 @@ class Parameters{
   final TextDirection textDirection;
 
   Parameters({
-    this.app,
-    this.sheet,
+    @required this.app,
+    @required this.sheet,
     this.attachment,
 
     this.startOpen: false,
@@ -73,14 +73,14 @@ class Parameters{
     this.swipeToOpen: true,
     this.swipeToClose: true,
 
-    this.animationSpeedInMilliseconds: 100, //full anim should take 200, auto anim completes the anim up to 50% so 100
+    this.maxAnimationTimeInMilliseconds: 100,
     this.indicatorAutoCloseColor: const Color.fromRGBO(0,0,0,.5),
     this.scrimOpenColor: const Color.fromRGBO(0,0,0,.5),
 
     this.sheetMin,
     this.sheetMax, //TODO... In Progress
 
-    this.textDirection,
+    this.textDirection: TextDirection.ltr,
   });
 }
 
@@ -119,7 +119,7 @@ class PublicFunctions{
 
 //-------------------------Material Sheet-------------------------
 
-//NOTE: this has to be stateless so that I can address the sheetOpen and sheetClose Functions
+//NOTE: this exists to avoid unnecessary rebuilding of the sheet since it has to rebuild twice to work properly
 class Sheet extends StatelessWidget{
 
   final Parameters parameters;
@@ -151,7 +151,7 @@ class Sheet extends StatelessWidget{
 
 //-------------------------The Actual Sheet-------------------------
 
-//NOTE: this has to be stateful because with WidgetsBindingObserver requires it and setState might be called
+//NOTE: this has to be stateful because "with WidgetsBindingObserver" requires it and setState might be called
 class SheetWidget extends StatefulWidget {
 
   final Parameters parameter;
@@ -166,6 +166,7 @@ class SheetWidget extends StatefulWidget {
   _SheetWidgetState createState() => new _SheetWidgetState();
 }
 
+//NOTE: this is a whole other class because the stateful class below already uses a with clause and each class can only have 1 with clause
 class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Local Variables----------
@@ -176,6 +177,10 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   OpenOrCloseAnimation animationOpenOrClose;
   StreamController<double> slideUpdateStream;
   double openPercent;
+
+  //public function variables
+  Size sheetSize;
+  Size attachmentSize;
 
   //widget keys
   GlobalKey wholeKey = new GlobalKey();
@@ -188,6 +193,9 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   linkPublicFunctions(){
     var w = widget.functions;
+    w.getOpenPercent = getOpenPercent;
+    w.getAttachmentSize = getAttachmentSize;
+    w.getSheetSize = getSheetSize;
     w.toggleInstantaneous = toggleInstantaneous;
     w.toggleAnimated = toggleAnimated;
     w.openInstantaneous = openInstantaneous;
@@ -210,6 +218,9 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
   //-------------------------Public Functions----------
 
+  Size getAttachmentSize() => attachmentSize;
+  Size getSheetSize() => sheetSize;
+
   toggleInstantaneous(){
     if(private.getOpenPercent() == 1.0 || private.getOpenPercent() == 0.0)
       (private.getOpenPercent() == 1.0) ? closeInstantaneous() : openInstantaneous();
@@ -222,8 +233,8 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
   openInstantaneous() => completeOpenOrClose(1.0, 0, private);
   closeInstantaneous() => completeOpenOrClose(0.0, 0, private);
 
-  openAnimated() => completeOpenOrClose(1.0, parameters.animationSpeedInMilliseconds, private);
-  closeAnimated() => completeOpenOrClose(0.0, parameters.animationSpeedInMilliseconds, private);
+  openAnimated() => completeOpenOrClose(1.0, parameters.maxAnimationTimeInMilliseconds, private);
+  closeAnimated() => completeOpenOrClose(0.0, parameters.maxAnimationTimeInMilliseconds, private);
 
   //-------------------------Private Functions----------
 
@@ -443,6 +454,9 @@ class _SheetWidgetState extends State<SheetWidget> with WidgetsBindingObserver{
 
     bool isWidthMax = (parameters.position == sheetPosition.bottom || parameters.position == sheetPosition.top);
 
+    attachmentSize = new Size(attachWidth, attachHeight);
+    sheetSize = new Size(sheetWidth, sheetHeight);
+
     Widget thisSheetWidget = sheetWidget(sheetWidth, sheetHeight);
 
     Transform mainWidget = new Transform(
@@ -593,6 +607,7 @@ class SwipeToOpenClose extends StatefulWidget {
   _SwipeToOpenCloseState createState() => _SwipeToOpenCloseState();
 }
 
+//NOTE: this is a whole other class because the stateful class above already uses a with clause and each class can only have 1 with clause
 class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerProviderStateMixin{
 
   //-------------------------Gesture Helpers
@@ -613,7 +628,6 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
   }
 
   onDragUpdate(DragUpdateDetails details){
-
     if(dragStart != null){
       final dragCurrent = details.globalPosition;
       var dragChange;
@@ -634,8 +648,15 @@ class _SwipeToOpenCloseState extends State<SwipeToOpenClose> with SingleTickerPr
   }
 
   onDragEnd(DragEndDetails details){
+    //clear some data
     dragStart = null;
-    completeOpenOrClose((widget.private.getOpenPercent() > 0.5) ? 1.0 : 0.0, widget.parameters.animationSpeedInMilliseconds, widget.private);
+    //calculate how long the animation should take
+    int animationTimeInMilliseconds = widget.parameters.maxAnimationTimeInMilliseconds; //the longest it should take assuming a full animated close or open
+    bool isOpening = (widget.private.getOpenPercent() >= 0.5);
+    if(isOpening) animationTimeInMilliseconds = ((1 - widget.private.getOpenPercent()) * animationTimeInMilliseconds).round();
+    else animationTimeInMilliseconds = ((0.5 - widget.private.getOpenPercent()) * animationTimeInMilliseconds).round();
+    //compete the open or closing action
+    completeOpenOrClose(isOpening ? 1.0 : 0.0, animationTimeInMilliseconds, widget.private);
   }
 
   //-------------------------System Functions
