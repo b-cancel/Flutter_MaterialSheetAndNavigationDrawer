@@ -1,27 +1,17 @@
-# Flutter_MaterialSheetAndNavigationDrawer
+# Flutter_MaterialSheetAndNavigationDrawer MASSIVE CHANGES NOT YET EXPLAINED, DOCUMENT NOT UPDATED
 
-<h3>What Am I</h3>
+<h3>Purpose</h3>
 
-A Very Flexible Widget that can Implement...
-1. Material Sheets (bottom, top, side) (modal and persistent) 
-2. Material Navigation Drawers
+A Very Flexible Widget that can Implement Material Sheets (bottom, top, side) (modal and persistent) 
 
-<h3>Why Do I Exist</h3>
+<h3>Features</h3>
 
-This Widget was created specifically because I wanted to...
-1. challenge myself
-2. use Side Material Sheets (Material.io mentions they are not currently implemented)
-3. learn to override the back button
-4. have more options when constructing my applications
-
-<h3>What You Need To Use Me</h3>
+MULTIPLE SHEETS PER APP
 
 WIDGET PARAMETERS
 1. app [required] -> the application that goes behind the sheet
 2. sheet [required] -> the sheet that animates in or out of the screen
 3. attachment -> an attachment to the sheet that is always on screen
-
-<h3>What Benefits I Provide</h3>
 
 VARIABLE PARAMETERS
 1. startOpen -> whether or not the sheet should startOpen (true, false)
@@ -33,25 +23,31 @@ VARIABLE PARAMETERS
 7. autoOpenOrCloseIndicator -> whether or not you should be shown whether you sheet will autoClose or autoOpen after you let go of it
 8. swipeToOpen -> whether or not you can swipe the sheet to open (NOTE: if no attachment is specified you will swipe the edge of the screen to open)
 9. swipeToClose -> whether or not you can swipe the sheet to close
-10. animationSpeedInMilliseconds -> how long the sheet takes to open or close if animated
+10. maxAnimationTimeInMilliseconds -> how long the sheet takes to open or close if animated
 11. indicatorAutoCloseColor -> the color that shows up when the sheet will auto close if let go [opacity matter]
 12. scrimOpenColor -> the color of the scrim when using a modal sheet [opacity matters]
 13. sheetMin -> the smallest the sheet can be
 14. sheetMax -> the largest the sheet can be
+15. textDirection -> the text direction inside of the sheet
 
-FUNCTIONS
-1. toggleInstant() -> toggle between opened and closed states with no animation
-2. toggleAnim() -> toggle between opened and closed states with animation 
-3. openInstant() -> open the sheet instantly
-4. openAnim() -> open the sheet with an animation
-5. closeInstant() -> close the sheet instantly
-6. closeAnim() -> close the sheet with an animation
+FUNCTIONS TO GRAB INFORMATION
+1. getOpenPercent() -> get how open the sheet is [0.0 -> 1.0]
+2. getAttachmentSize() -> get the width and height of the attachment
+3. getSheetSize() -> get the width and height of the sheet
 
-<h3>My Limitations</h3>
-I was not Created To Have The Best Performance.
-Given the large quantity of options it might be best to modify the code to only include the options you need.
+FUNCTIONS TO RUN COMMANDS
+1. toggleInstantaneous() -> toggle between opened and closed states with no animation
+2. toggleAnimated() -> toggle between opened and closed states with animation 
+3. openInstantaneous() -> open the sheet instantly
+4. openAnimated() -> open the sheet with an animation
+5. closeInstantaneous() -> close the sheet instantly
+6. closeAnimated() -> close the sheet with an animation
 
-<h3>How To Use Me</h3>
+<h3>Limitation</h3>
+I was not created to be performant.
+Modify my code if needed to suit your specific needs and get the best performance possible.
+
+<h3>How To</h3>
 
 ```
 import 'package:flutter/material.dart';
@@ -61,23 +57,47 @@ class MaterialSheetTestApp extends StatelessWidget {
 
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
 
-  MaterialSheet matSheet;
-  toggleInstant() => matSheet.toggleInstantaneous();
-  toggleAnim() => matSheet.toggleAnimated();
-  openInstant() => matSheet.openInstantaneous();
-  closeInstant() => matSheet.closeInstantaneous();
-  openAnim() => matSheet.openAnimated();
-  closeAnim() => matSheet.closeAnimated();
+  Sheet matSheet;
+  getOpenPercent() => matSheet.functions.getOpenPercent();
+  getSheetSize() => matSheet.functions.getSheetSize();
+  getAttachmentSize() => matSheet.functions.getAttachmentSize();
+  toggleInstant() => matSheet.functions.toggleInstantaneous();
+  toggleAnim() => matSheet.functions.toggleAnimated();
+  openInstant() => matSheet.functions.openInstantaneous();
+  closeInstant() => matSheet.functions.closeInstantaneous();
+  openAnim() => matSheet.functions.openAnimated();
+  closeAnim() => matSheet.functions.closeAnimated();
 
   @override
   Widget build(BuildContext context) {
-    matSheet = new MaterialSheet(
-      /*
-      * Specify all the desired widgets and variables here
-      * app, and sheet are required
-      * If you require one of the available functions inside of the Material Sheet simply call them from here
-      * For Examples inspect the "demo" dart files, and view the result of each by commenting all but one "runApp"
-      */
+    matSheet = new Sheet(
+      parameters: new Parameters(
+        //-----Widgets
+        app: new Container(),
+        sheet: new Container(
+          color: Colors.yellowAccent,
+          child: new Center(
+            child: new Text(
+              "Right Sheet",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14.0,
+              ),
+            ),
+          ),
+        ),
+        attachment: new Container(
+          color: Colors.greenAccent,
+          child: new Icon(
+            Icons.attachment,
+            color: Colors.white,
+          ),
+        ),
+        //-----Other Vars
+        position: sheetPosition.right,
+        autoOpenOrCloseIndicator: true,
+        placement: attachmentPlacement.inside,
+      ),
     );
 
     return matSheet;
@@ -87,12 +107,8 @@ class MaterialSheetTestApp extends StatelessWidget {
 
 <h3>Future Plans</h3>
 
-1. getOpenPercent Function
-2. getAttachmentSize, getSheetSize Functions
-3. multiple sheets on screen (currently a strange bug is stopping this)
-4. animationSpeedInMilliseconds is the ammount of time a sheet takes to full open, not just to complete opening [immutable]
-5. lockSheet (opened, closed, false) [mutable]
-6. sheetAffectsApp (resize, move, none) [mutable]
+1. lockSheet (opened, closed, false) [mutable]
+2. sheetAffectsApp (resize, move, none) [mutable]
 
 <h3>Demonstrations Of My Abilities</h3>
 
