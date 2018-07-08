@@ -53,6 +53,8 @@ Modify my code if needed to suit your specific needs and get the best performanc
 import 'package:flutter/material.dart';
 import 'materialSheet.dart';
 
+void main() => runApp(new MaterialSheetTestApp());
+
 class MaterialSheetTestApp extends StatelessWidget {
 
   //NOTE: these are required if you want buttons that will be opening or closing the sheet
@@ -73,7 +75,15 @@ class MaterialSheetTestApp extends StatelessWidget {
     matSheet = new Sheet(
       parameters: new Parameters(
         //-----Widgets
-        app: new Container(),
+        app: new Container(
+          child: new Center(
+            child: new FlatButton(
+              color: Colors.redAccent,
+              onPressed: () => openAnim(),
+              child: new Text("Press me to open the sheet"),
+            ),
+          ),
+        ),
         sheet: new Container(
           color: Colors.yellowAccent,
           child: new Center(
@@ -105,12 +115,12 @@ class MaterialSheetTestApp extends StatelessWidget {
 }
 ```
 
-<h3>Future Plans</h3>
+<h3>Plans</h3>
 
 1. lockSheet (opened, closed, false) [mutable]
 2. sheetAffectsApp (resize, move, none) [mutable]
 
-<h3>Demonstrations Of My Abilities</h3>
+<h3>Demos</h3>
 
 Remember to comment out every "runApp" in main.dart except the one you want to view
 
@@ -124,7 +134,7 @@ Remember to comment out every "runApp" in main.dart except the one you want to v
 <br>
 <h5>List Demo with Persistent Bottom Sheet With Options</h5>
 <br>
-<img src="https://media.giphy.com/media/57SRG05v8v70dO3OXn/giphy.gif" width="360"/>
+<img src="https://media.giphy.com/media/35KhYdJ9CQAN6hzYbQ/giphy.gif" width="360"/>
 <br>
 <h5>Navigation Drawer (comming soon)</h5>
 <br>
