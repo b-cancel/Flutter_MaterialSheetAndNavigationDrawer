@@ -9,7 +9,6 @@
   <img src="https://media.giphy.com/media/dYng1K8blxvnsLhP81/giphy.gif" width="250"/>
   <img src="https://media.giphy.com/media/dkXLQACALhF6puhk3I/giphy.gif" width="250"/>
   <img src="https://media.giphy.com/media/35KhYdJ9CQAN6hzYbQ/giphy.gif" width="250"/>
-  <img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="250"/>
   <img src="https://media.giphy.com/media/QmDaRdVzd3hjjeyIwB/giphy.gif" width="250"/>
   <img src="https://media.giphy.com/media/20OQm9fCzezqHSHpgM/giphy.gif" width="250"/>
   <img src="https://media.giphy.com/media/9rsWxrJaYOhCQbRDXD/giphy.gif" width="250"/>
