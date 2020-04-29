@@ -6,13 +6,13 @@
   <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="PayPal Donate Button">
 </a>
 <p float="left">
-  <img src="https://media.giphy.com/media/dYng1K8blxvnsLhP81/giphy.gif"/>
-  <img src="https://media.giphy.com/media/dkXLQACALhF6puhk3I/giphy.gif"/>
-  <img src="https://media.giphy.com/media/35KhYdJ9CQAN6hzYbQ/giphy.gif"/>
-  <img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif"/>
-  <img src="https://media.giphy.com/media/QmDaRdVzd3hjjeyIwB/giphy.gif"/>
-  <img src="https://media.giphy.com/media/20OQm9fCzezqHSHpgM/giphy.gif"/>
-  <img src="https://media.giphy.com/media/9rsWxrJaYOhCQbRDXD/giphy.gif"/>
+  <img src="https://media.giphy.com/media/dYng1K8blxvnsLhP81/giphy.gif" width="250"/>
+  <img src="https://media.giphy.com/media/dkXLQACALhF6puhk3I/giphy.gif" width="250"/>
+  <img src="https://media.giphy.com/media/35KhYdJ9CQAN6hzYbQ/giphy.gif" width="250"/>
+  <img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="250"/>
+  <img src="https://media.giphy.com/media/QmDaRdVzd3hjjeyIwB/giphy.gif" width="250"/>
+  <img src="https://media.giphy.com/media/20OQm9fCzezqHSHpgM/giphy.gif" width="250"/>
+  <img src="https://media.giphy.com/media/9rsWxrJaYOhCQbRDXD/giphy.gif" width="250"/>
 </p>
 
 <h3>Purpose</h3>
