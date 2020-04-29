@@ -5,7 +5,15 @@
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bryan%2eo%2ecancel%40gmail%2ecom&lc=US&item_name=Cup%20Of%20Coffee&item_number=0000&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest">
   <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="PayPal Donate Button">
 </a>
-<h4> </h4>
+<p float="left">
+  <img src="https://media.giphy.com/media/dYng1K8blxvnsLhP81/giphy.gif"/>
+  <img src="https://media.giphy.com/media/dkXLQACALhF6puhk3I/giphy.gif"/>
+  <img src="https://media.giphy.com/media/35KhYdJ9CQAN6hzYbQ/giphy.gif"/>
+  <img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif"/>
+  <img src="https://media.giphy.com/media/QmDaRdVzd3hjjeyIwB/giphy.gif"/>
+  <img src="https://media.giphy.com/media/20OQm9fCzezqHSHpgM/giphy.gif"/>
+  <img src="https://media.giphy.com/media/9rsWxrJaYOhCQbRDXD/giphy.gif"/>
+</p>
 
 <h3>Purpose</h3>
 
@@ -126,35 +134,3 @@ class MaterialSheetTestApp extends StatelessWidget {
 
 1. lockSheet (opened, closed, false) [mutable]
 2. sheetAffectsApp (resize, move, none) [mutable]
-
-<h3>Demos</h3>
-
-Remember to comment out every "runApp" in main.dart except the one you want to view
-
-<h5>Persistent Bottom Sheet</h5>
-<br>
-<img src="https://media.giphy.com/media/dYng1K8blxvnsLhP81/giphy.gif" width="360"/>
-<br>
-<h5>Modal Bottom Sheet</h5>
-<br>
-<img src="https://media.giphy.com/media/dkXLQACALhF6puhk3I/giphy.gif" width="360"/>
-<br>
-<h5>List Demo with Persistent Bottom Sheet With Options</h5>
-<br>
-<img src="https://media.giphy.com/media/35KhYdJ9CQAN6hzYbQ/giphy.gif" width="360"/>
-<br>
-<h5>Navigation Drawer (comming soon)</h5>
-<br>
-<img src="https://media.giphy.com/media/5e3CNDPwoWESMRgGtw/giphy.gif" width="360"/>
-<br>
-<h5>Attachment Inside</h5>
-<br>
-<img src="https://media.giphy.com/media/QmDaRdVzd3hjjeyIwB/giphy.gif" width="360"/>
-<br>
-<h5>Attachment Outside</h5>
-<br>
-<img src="https://media.giphy.com/media/20OQm9fCzezqHSHpgM/giphy.gif" width="360"/>
-<br>
-<h5>With Multiple Sheets</h5>
-<br>
-<img src="https://media.giphy.com/media/9rsWxrJaYOhCQbRDXD/giphy.gif" width="360"/>
